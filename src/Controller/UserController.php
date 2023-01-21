@@ -8,12 +8,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends AbstractController
 {
     public function __construct(private UserRepository $userRepository)
     {
     }
+
+
+
     #[Route('/user/login', name: 'user.login')]
     public function login(Request $request): JsonResponse
     {
@@ -33,29 +38,28 @@ class UserController extends AbstractController
                         'message' => 'Usuario logueado correctamente',
                         'user' => $userByEmail
                     ];
-                    
-                }else{
+                } else {
                     $return = [
                         'status' => 'error',
                         'error' => 404,
                         'message' => 'La contraseña no coincide'
                     ];
                 }
-            }else{
+            } else {
                 $return = [
                     'status' => 'error',
                     'error' => 404,
                     'message' => 'No existe usuario con este email'
                 ];
             }
-        }else{
+        } else {
             $data = [
                 'status' => 'error',
                 'error' => 404,
                 'message' => 'No has añadido ningún campo'
             ];
         }
-        return new JsonResponse ($return);
+        return new JsonResponse($return);
     }
 
     #[Route('/user/register', name: 'user.register', methods: ['POST'])]
@@ -214,7 +218,7 @@ class UserController extends AbstractController
                             $return["message"][] = "El apellido no es válido";
                         };
                     };
-                }else{
+                } else {
                     $return = [
                         "status" => 'error',
                         "code" => '400',
@@ -231,7 +235,7 @@ class UserController extends AbstractController
                                 "status" => 'success',
                                 "code" => '200',
                             ];
-                        }else{
+                        } else {
                             $return = [
                                 "status" => 'error',
                                 "code" => '400',
@@ -245,7 +249,6 @@ class UserController extends AbstractController
                     $this->userRepository->save($user, true);
                     $return['message'][] = 'El usuario ha sido actualizado correctamente';
                 }
-
             } else {
                 $return = [
                     "status" => 'error',
@@ -259,5 +262,38 @@ class UserController extends AbstractController
 
 
         return new JsonResponse($return);
+    }
+
+    #[Route('/user/upload/{id}', name: 'user.opload', methods: ['POST'])]
+    public function upload($id, Request $request)
+    {
+        $user = $this->userRepository->find($id);
+
+        if ($user != null) {
+            $file = $request->files->get('file');
+            if ($file) {
+                $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
+                try {
+                    $file->move($this->getParameter('images_directory') . '/user', $fileName);
+                    $user->setImg($fileName);
+                    $this->userRepository->save($user, true);
+                } catch (FileException $e) {
+                    dd($e);
+                }
+            }
+        }
+        return new JsonResponse('Imagen subida correctamente');
+    }
+
+    #[Route('/user/image/{id}', name: 'user.getImage', methods: ['POST'])]
+
+    public function getImage($id, Request $request)
+    {
+        
+        $user = $this->userRepository->find($id);
+        $path = $this->getParameter('images_directory').'/user/'. $user->getImg();
+        $response = new BinaryFileResponse($path);
+
+        return $response;
     }
 }

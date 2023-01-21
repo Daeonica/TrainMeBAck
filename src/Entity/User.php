@@ -27,6 +27,9 @@ class User
     #[ORM\Column(length: 500)]
     private ?string $password = null;
 
+    #[ORM\Column(length: 500)]
+    private ?string $img_path = null;
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Course::class)]
     private Collection $courses;
 
@@ -88,32 +91,15 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
+
+    public function getImg()
     {
-        return $this->courses;
+        return $this->img_path;
     }
 
-    public function addCourse(Course $course): self
+    public function setImg($img_path)
     {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-            $course->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): self
-    {
-        if ($this->courses->removeElement($course)) {
-            // set the owning side to null (unless already changed)
-            if ($course->getUser() === $this) {
-                $course->setUser(null);
-            }
-        }
+        $this->img_path = $img_path;
 
         return $this;
     }
