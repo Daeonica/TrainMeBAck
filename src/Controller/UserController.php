@@ -17,8 +17,45 @@ class UserController extends AbstractController
     #[Route('/user/login', name: 'user.login')]
     public function login(Request $request): JsonResponse
     {
+        $json = $request->get('data', null);
+        $return = [];
+        if ($json != null) {
+            $array = json_decode($json, true);
+            $email = $array['email'];
+            $password = $array['password'];
+            $userByEmail = $this->userRepository->findOneByEmailField($email);
 
-        return new JsonResponse;
+            if ($userByEmail != null) {
+                if (password_verify($password, $userByEmail->getPassword())) {
+                    $return = [
+                        'status' => 'success',
+                        'error' => 200,
+                        'message' => 'Usuario logueado correctamente',
+                        'user' => $userByEmail
+                    ];
+                    
+                }else{
+                    $return = [
+                        'status' => 'error',
+                        'error' => 404,
+                        'message' => 'La contraseña no coincide'
+                    ];
+                }
+            }else{
+                $return = [
+                    'status' => 'error',
+                    'error' => 404,
+                    'message' => 'No existe usuario con este email'
+                ];
+            }
+        }else{
+            $data = [
+                'status' => 'error',
+                'error' => 404,
+                'message' => 'No has añadido ningún campo'
+            ];
+        }
+        return new JsonResponse ($return);
     }
 
     #[Route('/user/register', name: 'user.register', methods: ['POST'])]
