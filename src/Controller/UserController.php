@@ -28,30 +28,30 @@ class UserController extends AbstractController
             $array = json_decode($json, true);
             $email = $array['email'];
             $password = $array['password'];
-            $userByEmail = $this->userRepository->findOneByEmailField($email);
+        $userByEmail = $this->userRepository->findOneByEmailField($email);
 
-            if ($userByEmail != null) {
-                if (password_verify($password, $userByEmail->getPassword())) {
-                    $return = [
-                        'status' => 'success',
-                        'error' => 200,
-                        'message' => 'Usuario logueado correctamente',
-                        'user' => $userByEmail
-                    ];
-                } else {
-                    $return = [
-                        'status' => 'error',
-                        'error' => 404,
-                        'message' => 'La contraseña no coincide'
-                    ];
-                }
+        if ($userByEmail != null) {
+            if (password_verify($password, $userByEmail->getPassword())) {
+                $return = [
+                    'status' => 'success',
+                    'error' => 200,
+                    'message' => 'Usuario logueado correctamente',
+                    'user' => $userByEmail
+                ];
             } else {
                 $return = [
                     'status' => 'error',
                     'error' => 404,
-                    'message' => 'No existe usuario con este email'
+                    'message' => 'La contraseña no coincide'
                 ];
             }
+        } else {
+            $return = [
+                'status' => 'error',
+                'error' => 404,
+                'message' => 'No existe usuario con este email'
+            ];
+        }
         } else {
             $data = [
                 'status' => 'error',
@@ -289,9 +289,9 @@ class UserController extends AbstractController
 
     public function getImage($id, Request $request)
     {
-        
+
         $user = $this->userRepository->find($id);
-        $path = $this->getParameter('images_directory').'/user/'. $user->getImg();
+        $path = $this->getParameter('images_directory') . '/user/' . $user->getImg();
         $response = new BinaryFileResponse($path);
 
         return $response;
