@@ -28,34 +28,39 @@ class UserController extends AbstractController
             $array = json_decode($json, true);
             $email = $array['email'];
             $password = $array['password'];
-        $userByEmail = $this->userRepository->findOneByEmailField($email);
-
-        if ($userByEmail != null) {
-            if (password_verify($password, $userByEmail->getPassword())) {
-                $return = [
-                    'status' => 'success',
-                    'error' => 200,
-                    'message' => 'Usuario logueado correctamente',
-                    'user' => $userByEmail
-                ];
+            $userByEmail = $this->userRepository->findOneByEmailField($email);
+            if ($userByEmail != null) {
+                if (password_verify($password, $userByEmail->getPassword())) {
+                    $return = [
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Usuario logueado correctamente',
+                        'user' => [
+                            'id' => $userByEmail->getId(),
+                            'name' => $userByEmail->getName(),
+                            'surname' => $userByEmail->getSurname(),
+                            'email' => $userByEmail->getEmail(),
+                            'password' => $userByEmail->getPassword()
+                        ]
+                    ];
+                } else {
+                    $return = [
+                        'status' => 'error',
+                        'code' => 404,
+                        'message' => 'La contraseña no coincide'
+                    ];
+                }
             } else {
                 $return = [
                     'status' => 'error',
-                    'error' => 404,
-                    'message' => 'La contraseña no coincide'
+                    'code' => 404,
+                    'message' => 'No existe usuario con este email'
                 ];
             }
         } else {
             $return = [
                 'status' => 'error',
-                'error' => 404,
-                'message' => 'No existe usuario con este email'
-            ];
-        }
-        } else {
-            $data = [
-                'status' => 'error',
-                'error' => 404,
+                'code' => 404,
                 'message' => 'No has añadido ningún campo'
             ];
         }
@@ -285,7 +290,7 @@ class UserController extends AbstractController
         return new JsonResponse('Imagen subida correctamente');
     }
 
-    #[Route('/user/image/{id}', name: 'user.getImage', methods: ['POST'])]
+    #[Route('/user/image/{id}', name: 'user.getImage', methods: ['GET'])]
 
     public function getImage($id, Request $request)
     {
