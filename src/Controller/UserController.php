@@ -34,7 +34,7 @@ class UserController extends AbstractController
                     $return = [
                         'status' => 'success',
                         'code' => 200,
-                        'message' => 'Usuario logueado correctamente',
+                        'messages' => 'Usuario logueado correctamente',
                         'user' => [
                             'id' => $userByEmail->getId(),
                             'name' => $userByEmail->getName(),
@@ -47,21 +47,21 @@ class UserController extends AbstractController
                     $return = [
                         'status' => 'error',
                         'code' => 404,
-                        'message' => 'La contraseña no coincide'
+                        'messages' => 'La contraseña no coincide'
                     ];
                 }
             } else {
                 $return = [
                     'status' => 'error',
                     'code' => 404,
-                    'message' => 'No existe usuario con este email'
+                    'messages' => 'No existe usuario con este email'
                 ];
             }
         } else {
             $return = [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'No has añadido ningún campo'
+                'messages' => 'No has añadido ningún campo'
             ];
         }
         return new JsonResponse($return);
@@ -90,60 +90,66 @@ class UserController extends AbstractController
                                     "user" => $array,
                                     "status" => 'success',
                                     "code" => '200',
-                                    "message" => ['Usuario registrado correctamente']
                                 ];
+                                $return['messages'][] = 'Usuario registrado correctamente';
                             } else {
                                 $return = [
                                     "status" => 'error',
                                     "code" => '400',
-                                    "message" => ['La contraseña no coincide']
                                 ];
+                                $return['messages'][] = 'La contraseña no coincide';
                             }
                         } else {
                             $return = [
                                 "status" => 'error',
                                 "code" => '400',
-                                "message" => ['La contraseña no es válida']
                             ];
+                            $return['messages'][] = 'La contraseña no es válida';
+
                         }
                     } else {
                         $return = [
                             "status" => 'error',
                             "code" => '400',
-                            "message" => []
+                            "messages" => []
                         ];
                         if ($this->hasNumber($array['name'])) {
-                            $return["message"][] = "El nombre no es válido";
+                            $return["messages"][] = "El nombre no es válido";
                         };
                         if ($this->hasNumber($array['surname'])) {
-                            $return["message"][] = "El apellido no es válido";
+                            $return["messages"][] = "El apellido no es válido";
                         };
                     };
                 } else {
                     $return = [
                         "status" => 'error',
                         "code" => '400',
-                        "message" => ['El email ya existe']
                     ];
+                    $return["messages"][] = "El email ya existe";
+
                 }
             } else {
                 $return = [
                     "status" => 'error',
                     "code" => '400',
-                    "message" => []
+                    "messages" => []
                 ];
                 if (empty($array['name'])) {
-                    $return["message"][] = "El nombre no puede estar vacío";
+                    $return["messages"][] = "El nombre no puede estar vacío";
                 };
                 if (empty($array['surname'])) {
-                    $return["message"][] = "El apellido no puede estar vacío";
+                    $return["messages"][] = "El apellido no puede estar vacío";
                 };
                 if (empty($array['email'])) {
-                    $return["message"][] = "El email no puede estar vacío";
+                    $return["messages"][] = "El email no puede estar vacío";
                 };
             }
         } else {
-            $return = ['Campos vacíos'];
+            $return = [
+                "status" => 'error',
+                "code" => '400',
+            ];
+            $return['messages'] = 'Campos vacíos';
         }
 
 
@@ -173,19 +179,19 @@ class UserController extends AbstractController
                 $return = [
                     "code" => '200',
                     "status" => 'success',
-                    "message" => 'El usuario ha sido eliminado correctamente'
+                    "messages" => 'El usuario ha sido eliminado correctamente'
                 ];
             } else {
                 $return = [
                     "code" => '404',
                     "status" => 'error',
-                    "message" => 'El usuario no se encuentra'
+                    "messages" => 'El usuario no se encuentra'
                 ];
             }
         } else {
             $return['code'] = '400';
             $return['status'] = 'error';
-            $return['message'] = 'Campos vacíos';
+            $return['messages'] = 'Campos vacíos';
         }
         return new JsonResponse($return);
     }
@@ -208,26 +214,26 @@ class UserController extends AbstractController
                             "user" => $array,
                             "status" => 'success',
                             "code" => '200',
-                            "message" => []
+                            "messages" => []
                         ];
                     } else {
                         $return = [
                             "status" => 'error',
                             "code" => '400',
-                            "message" => []
+                            "messages" => []
                         ];
                         if ($this->hasNumber($array['name'])) {
-                            $return["message"][] = "El nombre no es válido";
+                            $return["messages"][] = "El nombre no es válido";
                         };
                         if ($this->hasNumber($array['surname'])) {
-                            $return["message"][] = "El apellido no es válido";
+                            $return["messages"][] = "El apellido no es válido";
                         };
                     };
                 } else {
                     $return = [
                         "status" => 'error',
                         "code" => '400',
-                        "message" => []
+                        "messages" => []
                     ];
                 }
 
@@ -245,20 +251,20 @@ class UserController extends AbstractController
                                 "status" => 'error',
                                 "code" => '400',
                             ];
-                            $return["message"][] = 'Email ya existe';
+                            $return["messages"][] = 'Email ya existe';
                         }
                     }
                 }
 
                 if ($return['code'] == '200') {
                     $this->userRepository->save($user, true);
-                    $return['message'][] = 'El usuario ha sido actualizado correctamente';
+                    $return['messages'][] = 'El usuario ha sido actualizado correctamente';
                 }
             } else {
                 $return = [
                     "status" => 'error',
                     "code" => '404',
-                    "message" => ['No se ha podido identificar al usuario']
+                    "messages" => ['No se ha podido identificar al usuario']
                 ];
             }
         } else {
@@ -274,6 +280,7 @@ class UserController extends AbstractController
     {
         $user = $this->userRepository->find($id);
 
+
         if ($user != null) {
             $file = $request->files->get('file');
             if ($file) {
@@ -281,6 +288,7 @@ class UserController extends AbstractController
                 try {
                     $file->move($this->getParameter('images_directory') . '/user', $fileName);
                     $user->setImg($fileName);
+
                     $this->userRepository->save($user, true);
                 } catch (FileException $e) {
                     dd($e);
