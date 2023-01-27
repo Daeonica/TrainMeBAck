@@ -29,7 +29,7 @@ class Sponsors
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\OneToMany(mappedBy: 'sponsor_id', targetEntity: Contabilities::class)]
+    #[ORM\OneToMany(mappedBy: 'sponsor', targetEntity: Contabilities::class)]
     private Collection $contabilities;
 
     public function __construct()

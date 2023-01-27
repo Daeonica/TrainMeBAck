@@ -31,12 +31,12 @@ class Courses
     private ?string $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'Courses')]
-    private ?users $id_user = null;
+    private ?Users $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'Courses')]
     private ?Categories $Categories = null;
 
-    #[ORM\OneToMany(mappedBy: 'course_id', targetEntity: CoursePurchases::class)]
+    #[ORM\OneToMany(mappedBy: 'courses', targetEntity: CoursePurchases::class)]
     private Collection $coursePurchases;
 
     #[ORM\Column(length: 500)]
@@ -102,12 +102,12 @@ class Courses
 
     public function getIdUser(): ?users
     {
-        return $this->id_user;
+        return $this->user;
     }
 
-    public function setIdUser(?users $id_user): self
+    public function setIdUser(?users $user): self
     {
-        $this->id_user = $id_user;
+        $this->user = $user;
 
         return $this;
     }

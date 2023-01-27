@@ -41,13 +41,13 @@ class Users
     #[ORM\JoinColumn(nullable: false)]
     private ?Roles $role = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Courses::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Courses::class)]
     private Collection $courses;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Publications::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Publications::class)]
     private Collection $publications;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: CoursePurchases::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CoursePurchases::class)]
     private Collection $coursePurchases;
 
     public function __construct()
