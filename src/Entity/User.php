@@ -58,6 +58,7 @@ class User
             "surname" => $this->surname,
             "email" => $this->email,
             "password" => $this->getPassword(),
+            "description" => $this->description,
             "img_path" => $this->img_path,
             "register_date" => $this->register_date,
             "role_id" => $this->getRole()->getId()

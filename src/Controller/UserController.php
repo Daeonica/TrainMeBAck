@@ -86,6 +86,10 @@ class UserController extends AbstractController
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
                                 $user->setRegisterDate(new \DateTime);
 
+                                if (isset($array['description'])) {
+                                    $user->setDescription($array['description']);
+                                }
+
                                 if (isset($array['role_id'])) {
                                     $role = $this->roleRepository->findOneBy(['key_value' => $array['role_id']]);
                                 }else {
@@ -99,10 +103,8 @@ class UserController extends AbstractController
                                 }
                                 $user->setRole($role);
                                 $this->userRepository->save($user, true);
-                                unset($array['confirmPassword']);
-                                unset($array['password']);
-                                $array['encriptedPassword'] = $user->getPassword();
-                                $array['role'] = $user->getRole()->getKeyValue();
+                                unset($array);
+                                
                                 $return = [
                                     "user" => $user->getDataInArray(),
                                     "status" => 'success',
