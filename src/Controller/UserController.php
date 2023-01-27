@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\User;
+use App\Repository\UsersRepository as UserRepository;
+use App\Entity\Users as User;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -46,21 +47,21 @@ class UserController extends AbstractController
                 } else {
                     $return = [
                         'status' => 'error',
-                        'code' => 404,
+                        'code' => 400,
                         'messages' => 'La contraseña no coincide'
                     ];
                 }
             } else {
                 $return = [
                     'status' => 'error',
-                    'code' => 404,
+                    'code' => 400,
                     'messages' => 'No existe usuario con este email'
                 ];
             }
         } else {
             $return = [
                 'status' => 'error',
-                'code' => 404,
+                'code' => 400,
                 'messages' => 'No has añadido ningún campo'
             ];
         }
@@ -85,6 +86,7 @@ class UserController extends AbstractController
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
                                 $this->userRepository->save($user, true);
                                 unset($array['confirmPassword']);
+                                unset($array['password']);
                                 $array['encriptedPassword'] = $user->getPassword();
                                 $return = [
                                     "user" => $array,
@@ -105,7 +107,6 @@ class UserController extends AbstractController
                                 "code" => '400',
                             ];
                             $return['messages'][] = 'La contraseña no es válida';
-
                         }
                     } else {
                         $return = [
@@ -126,7 +127,6 @@ class UserController extends AbstractController
                         "code" => '400',
                     ];
                     $return["messages"][] = "El email ya existe";
-
                 }
             } else {
                 $return = [
@@ -179,19 +179,19 @@ class UserController extends AbstractController
                 $return = [
                     "code" => '200',
                     "status" => 'success',
-                    "messages" => 'El usuario ha sido eliminado correctamente'
                 ];
+                $return['messages'][] = 'El usuario ha sido eliminado correctamente';
             } else {
                 $return = [
-                    "code" => '404',
+                    "code" => '400',
                     "status" => 'error',
-                    "messages" => 'El usuario no se encuentra'
                 ];
+                $return['messages'][] = 'El usuario no se encuentra';
             }
         } else {
             $return['code'] = '400';
             $return['status'] = 'error';
-            $return['messages'] = 'Campos vacíos';
+            $return['messages'][] = 'Campos vacíos';
         }
         return new JsonResponse($return);
     }
@@ -214,13 +214,11 @@ class UserController extends AbstractController
                             "user" => $array,
                             "status" => 'success',
                             "code" => '200',
-                            "messages" => []
                         ];
                     } else {
                         $return = [
                             "status" => 'error',
                             "code" => '400',
-                            "messages" => []
                         ];
                         if ($this->hasNumber($array['name'])) {
                             $return["messages"][] = "El nombre no es válido";
@@ -233,8 +231,8 @@ class UserController extends AbstractController
                     $return = [
                         "status" => 'error',
                         "code" => '400',
-                        "messages" => []
                     ];
+                    $return["messages"][] = "Los datos están vaciós";
                 }
 
                 if (!empty($array['email'])) {
@@ -263,12 +261,17 @@ class UserController extends AbstractController
             } else {
                 $return = [
                     "status" => 'error',
-                    "code" => '404',
-                    "messages" => ['No se ha podido identificar al usuario']
+                    "code" => '400',
                 ];
+                $return['messages'][] = 'No se ha podido identificar al usuario';
+
             }
         } else {
-            $return = ['Campos vacíos'];
+            $return = [
+                "status" => 'error',
+                "code" => '400',
+            ];
+            $return['messages'][] = 'No hay datos';
         }
 
 
@@ -287,7 +290,7 @@ class UserController extends AbstractController
                 $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                 try {
                     $file->move($this->getParameter('images_directory') . '/user', $fileName);
-                    $user->setImg($fileName);
+                    $user->setImgPath($fileName);
 
                     $this->userRepository->save($user, true);
                 } catch (FileException $e) {
@@ -304,7 +307,7 @@ class UserController extends AbstractController
     {
 
         $user = $this->userRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/user/' . $user->getImg();
+        $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
         $response = new BinaryFileResponse($path);
 
         return $response;
