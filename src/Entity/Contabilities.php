@@ -25,7 +25,7 @@ class Contabilities
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $concept = null;
 
-    #[ORM\ManyToOne(inversedBy: 'contabilities')]
+    #[ORM\ManyToOne(inversedBy: 'Contabilities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?sponsors $sponsor_id = null;
 

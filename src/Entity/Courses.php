@@ -30,13 +30,13 @@ class Courses
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
 
-    #[ORM\ManyToOne(inversedBy: 'courses')]
+    #[ORM\ManyToOne(inversedBy: 'Courses')]
     private ?users $id_user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'courses')]
-    private ?categories $categories = null;
+    #[ORM\ManyToOne(inversedBy: 'Courses')]
+    private ?Categories $Categories = null;
 
-    #[ORM\OneToMany(mappedBy: 'id_course', targetEntity: CoursePurchases::class)]
+    #[ORM\OneToMany(mappedBy: 'course_id', targetEntity: CoursePurchases::class)]
     private Collection $coursePurchases;
 
     #[ORM\Column(length: 500)]
@@ -112,14 +112,14 @@ class Courses
         return $this;
     }
 
-    public function getCategories(): ?categories
+    public function getCategories(): ?Categories
     {
-        return $this->categories;
+        return $this->Categories;
     }
 
-    public function setCategories(?categories $categories): self
+    public function setCategories(?Categories $Categories): self
     {
-        $this->categories = $categories;
+        $this->Categories = $Categories;
 
         return $this;
     }

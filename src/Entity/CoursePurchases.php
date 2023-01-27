@@ -19,11 +19,11 @@ class CoursePurchases
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $transaction_date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'coursePurchases')]
-    private ?courses $id_course = null;
+    #[ORM\ManyToOne(inversedBy: 'CoursePurchases')]
+    private ?courses $course_id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'coursePurchases')]
-    private ?users $id_user = null;
+    #[ORM\ManyToOne(inversedBy: 'CoursePurchases')]
+    private ?users $user_id = null;
 
     public function getId(): ?int
     {
@@ -44,24 +44,24 @@ class CoursePurchases
 
     public function getIdCourse(): ?courses
     {
-        return $this->id_course;
+        return $this->course_id;
     }
 
-    public function setIdCourse(?courses $id_course): self
+    public function setIdCourse(?courses $course_id): self
     {
-        $this->id_course = $id_course;
+        $this->course_id = $course_id;
 
         return $this;
     }
 
     public function getIdUser(): ?users
     {
-        return $this->id_user;
+        return $this->user_id;
     }
 
-    public function setIdUser(?users $id_user): self
+    public function setIdUser(?users $user_id): self
     {
-        $this->id_user = $id_user;
+        $this->user_id = $user_id;
 
         return $this;
     }

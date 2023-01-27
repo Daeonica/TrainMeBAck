@@ -25,11 +25,11 @@ class Publications
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_publication = null;
 
-    #[ORM\ManyToOne(inversedBy: 'publications')]
+    #[ORM\ManyToOne(inversedBy: 'Publications')]
     private ?users $id_user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'publications')]
-    private ?categories $id_category = null;
+    #[ORM\ManyToOne(inversedBy: 'Publications')]
+    private ?Categories $id_category = null;
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $img_path = null;
@@ -87,12 +87,12 @@ class Publications
         return $this;
     }
 
-    public function getIdCategory(): ?categories
+    public function getIdCategory(): ?Categories
     {
         return $this->id_category;
     }
 
-    public function setIdCategory(?categories $id_category): self
+    public function setIdCategory(?Categories $id_category): self
     {
         $this->id_category = $id_category;
 

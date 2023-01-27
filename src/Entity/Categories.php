@@ -20,10 +20,10 @@ class Categories
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Courses::class)]
+    #[ORM\OneToMany(mappedBy: 'Categories', targetEntity: Courses::class)]
     private Collection $courses;
 
-    #[ORM\OneToMany(mappedBy: 'id_category', targetEntity: Publications::class)]
+    #[ORM\OneToMany(mappedBy: 'category_id', targetEntity: Publications::class)]
     private Collection $publications;
 
     public function __construct()

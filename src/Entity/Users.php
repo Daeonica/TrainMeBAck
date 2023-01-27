@@ -30,24 +30,25 @@ class Users
     #[ORM\Column(length: 500)]
     private ?string $email = null;
 
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $register_date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?roles $rol_id = null;
-
-    #[ORM\OneToMany(mappedBy: 'id_user', targetEntity: Courses::class)]
-    private Collection $courses;
-
-    #[ORM\OneToMany(mappedBy: 'id_user', targetEntity: Publications::class)]
-    private Collection $publications;
-
-    #[ORM\OneToMany(mappedBy: 'id_user', targetEntity: CoursePurchases::class)]
-    private Collection $coursePurchases;
-
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $img_path = null;
+
+    #[ORM\ManyToOne(inversedBy: 'Users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Roles $role = null;
+
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Courses::class)]
+    private Collection $courses;
+
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Publications::class)]
+    private Collection $publications;
+
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: CoursePurchases::class)]
+    private Collection $coursePurchases;
 
     public function __construct()
     {
@@ -121,14 +122,14 @@ class Users
         return $this;
     }
 
-    public function getRolId(): ?roles
+    public function getRoleId(): ?Roles
     {
-        return $this->rol_id;
+        return $this->role;
     }
 
-    public function setRolId(?roles $rol_id): self
+    public function setRoleId(?Roles $role_id): self
     {
-        $this->rol_id = $rol_id;
+        $this->role= $role_id;
 
         return $this;
     }

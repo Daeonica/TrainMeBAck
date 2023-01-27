@@ -9,12 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UsersRepository as UserRepository;
 use App\Entity\Users as User;
+use App\Repository\RolesRepository as RoleRepository;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository)
     {
     }
 
@@ -84,10 +85,17 @@ class UserController extends AbstractController
                                 $user->setSurname($array['surname']);
                                 $user->setEmail($array['email']);
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
+                                if (isset($array['role_id'])) {
+                                    $role = $this->roleRepository->findOneBy(['key_value' => $array['role_id']]);
+                                }else {
+                                    $role = $this->roleRepository->findOneBy(['key_value' => 'super_admin']);
+                                }
+                                $user->setRoleId($role);
                                 $this->userRepository->save($user, true);
                                 unset($array['confirmPassword']);
                                 unset($array['password']);
                                 $array['encriptedPassword'] = $user->getPassword();
+                                $array['role'] = $user->getRoleId()->getKeyValue();
                                 $return = [
                                     "user" => $array,
                                     "status" => 'success',
