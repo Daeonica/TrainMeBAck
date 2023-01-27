@@ -86,6 +86,7 @@ class UserController extends AbstractController
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
                                 $this->userRepository->save($user, true);
                                 unset($array['confirmPassword']);
+                                unset($array['password']);
                                 $array['encriptedPassword'] = $user->getPassword();
                                 $return = [
                                     "user" => $array,
