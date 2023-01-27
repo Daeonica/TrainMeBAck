@@ -8,7 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UsersRepository as UserRepository;
-
+use App\Entity\Users as User;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends AbstractController
 {
@@ -286,7 +288,7 @@ class UserController extends AbstractController
                 $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                 try {
                     $file->move($this->getParameter('images_directory') . '/user', $fileName);
-                    $user->setImg($fileName);
+                    $user->setImgPath($fileName);
 
                     $this->userRepository->save($user, true);
                 } catch (FileException $e) {
@@ -303,7 +305,7 @@ class UserController extends AbstractController
     {
 
         $user = $this->userRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/user/' . $user->getImg();
+        $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
         $response = new BinaryFileResponse($path);
 
         return $response;

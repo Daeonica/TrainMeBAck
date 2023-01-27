@@ -39,6 +39,9 @@ class Courses
     #[ORM\OneToMany(mappedBy: 'id_course', targetEntity: CoursePurchases::class)]
     private Collection $coursePurchases;
 
+    #[ORM\Column(length: 500)]
+    private ?string $img_path = null;
+
     public function __construct()
     {
         $this->coursePurchases = new ArrayCollection();
@@ -147,6 +150,18 @@ class Courses
                 $coursePurchase->setIdCourse(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImgPath(): ?string
+    {
+        return $this->img_path;
+    }
+
+    public function setImgPath(string $img_path): self
+    {
+        $this->img_path = $img_path;
 
         return $this;
     }

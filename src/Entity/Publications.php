@@ -31,6 +31,9 @@ class Publications
     #[ORM\ManyToOne(inversedBy: 'publications')]
     private ?categories $id_category = null;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $img_path = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +95,18 @@ class Publications
     public function setIdCategory(?categories $id_category): self
     {
         $this->id_category = $id_category;
+
+        return $this;
+    }
+
+    public function getImgPath(): ?string
+    {
+        return $this->img_path;
+    }
+
+    public function setImgPath(?string $img_path): self
+    {
+        $this->img_path = $img_path;
 
         return $this;
     }
