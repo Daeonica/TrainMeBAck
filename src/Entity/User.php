@@ -41,6 +41,9 @@ class User
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Course::class)]
     private Collection $courses;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $description = null;
+
     
 
     public function __construct()
@@ -177,6 +180,18 @@ class User
                 $course->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
