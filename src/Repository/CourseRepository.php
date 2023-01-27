@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Contabilities;
+use App\Entity\Course;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Contabilities>
+ * @extends ServiceEntityRepository<Course>
  *
- * @method Contabilities|null find($id, $lockMode = null, $lockVersion = null)
- * @method Contabilities|null findOneBy(array $criteria, array $orderBy = null)
- * @method Contabilities[]    findAll()
- * @method Contabilities[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Course|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Course|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Course[]    findAll()
+ * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ContabilitiesRepository extends ServiceEntityRepository
+class CourseRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Contabilities::class);
+        parent::__construct($registry, Course::class);
     }
 
-    public function save(Contabilities $entity, bool $flush = false): void
+    public function save(Course $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class ContabilitiesRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Contabilities $entity, bool $flush = false): void
+    public function remove(Course $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class ContabilitiesRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Contabilities[] Returns an array of Contabilities objects
+//     * @return Course[] Returns an array of Course objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class ContabilitiesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Contabilities
+//    public function findOneBySomeField($value): ?Course
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

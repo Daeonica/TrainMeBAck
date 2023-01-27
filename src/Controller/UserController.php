@@ -2,25 +2,31 @@
 
 namespace App\Controller;
 
+use App\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Repository\UsersRepository as UserRepository;
-use App\Entity\Users as User;
+use App\Repository\UserRepository;
+use App\Entity\User;
+use App\Repository\RoleRepository;
+use DateTime;
+use DateTimeInterface;
+use Monolog\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\Validator\Constraints\DateTime as ConstraintsDateTime;
 
 class UserController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository)
     {
     }
 
 
 
-    #[Route('/user/login', name: 'user.login')]
+    #[Route('/user/login', name: 'user.login', methods:['POST'])]
     public function login(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -29,20 +35,14 @@ class UserController extends AbstractController
             $array = json_decode($json, true);
             $email = $array['email'];
             $password = $array['password'];
-            $userByEmail = $this->userRepository->findOneByEmailField($email);
+            $userByEmail = $this->userRepository->findOneBy(['email' => $email]);
             if ($userByEmail != null) {
                 if (password_verify($password, $userByEmail->getPassword())) {
                     $return = [
                         'status' => 'success',
                         'code' => 200,
                         'messages' => 'Usuario logueado correctamente',
-                        'user' => [
-                            'id' => $userByEmail->getId(),
-                            'name' => $userByEmail->getName(),
-                            'surname' => $userByEmail->getSurname(),
-                            'email' => $userByEmail->getEmail(),
-                            'password' => $userByEmail->getPassword()
-                        ]
+                        'user' => $userByEmail->getDataInArray()
                     ];
                 } else {
                     $return = [
@@ -84,12 +84,27 @@ class UserController extends AbstractController
                                 $user->setSurname($array['surname']);
                                 $user->setEmail($array['email']);
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
+                                $user->setRegisterDate(new \DateTime);
+
+                                if (isset($array['role_id'])) {
+                                    $role = $this->roleRepository->findOneBy(['key_value' => $array['role_id']]);
+                                }else {
+                                    $role = $this->roleRepository->findOneBy(['key_value' => 'super_admin']);
+                                    if ($role == null) {
+                                        $role = new Role();
+                                        $role->setName('super_admin');
+                                        $role->setKeyValue('super_admin');
+                                        $this->roleRepository->save($role, true);
+                                    }
+                                }
+                                $user->setRole($role);
                                 $this->userRepository->save($user, true);
                                 unset($array['confirmPassword']);
                                 unset($array['password']);
                                 $array['encriptedPassword'] = $user->getPassword();
+                                $array['role'] = $user->getRole()->getKeyValue();
                                 $return = [
-                                    "user" => $array,
+                                    "user" => $user->getDataInArray(),
                                     "status" => 'success',
                                     "code" => '200',
                                 ];
@@ -240,7 +255,7 @@ class UserController extends AbstractController
                         if ($this->userRepository->findOneBy(['email' => $array['email']]) == null) {
                             $user->setEmail($array['email']);
                             $return = [
-                                "user" => $array,
+                                "user" => $user->getDataInArray(),
                                 "status" => 'success',
                                 "code" => '200',
                             ];
@@ -311,5 +326,16 @@ class UserController extends AbstractController
         $response = new BinaryFileResponse($path);
 
         return $response;
+    }
+
+    #[Route('/about_us', name: 'about_us', methods: ['GET'])]
+    public function aboutUs(){
+        $role = $this->roleRepository->findOneBy(['key_value' => 'super_Admin']);
+        $users = $role->getUsers()->toArray();
+        $return = [];
+        foreach($users as $user){
+            $return[] = $user->getDataInArray();
+        }
+        return new JsonResponse($return);
     }
 }

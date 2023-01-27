@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Categories;
+use App\Entity\Contability;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Categories>
+ * @extends ServiceEntityRepository<Contability>
  *
- * @method Categories|null find($id, $lockMode = null, $lockVersion = null)
- * @method Categories|null findOneBy(array $criteria, array $orderBy = null)
- * @method Categories[]    findAll()
- * @method Categories[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Contability|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Contability|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Contability[]    findAll()
+ * @method Contability[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategoriesRepository extends ServiceEntityRepository
+class ContabilityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Categories::class);
+        parent::__construct($registry, Contability::class);
     }
 
-    public function save(Categories $entity, bool $flush = false): void
+    public function save(Contability $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CategoriesRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Categories $entity, bool $flush = false): void
+    public function remove(Contability $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CategoriesRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Categories[] Returns an array of Categories objects
+//     * @return Contability[] Returns an array of Contability objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CategoriesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Categories
+//    public function findOneBySomeField($value): ?Contability
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

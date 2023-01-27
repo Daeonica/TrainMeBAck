@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\CoursePurchases;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<CoursePurchases>
+ * @extends ServiceEntityRepository<Category>
  *
- * @method CoursePurchases|null find($id, $lockMode = null, $lockVersion = null)
- * @method CoursePurchases|null findOneBy(array $criteria, array $orderBy = null)
- * @method CoursePurchases[]    findAll()
- * @method CoursePurchases[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Category|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Category|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Category[]    findAll()
+ * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CoursePurchasesRepository extends ServiceEntityRepository
+class CategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CoursePurchases::class);
+        parent::__construct($registry, Category::class);
     }
 
-    public function save(CoursePurchases $entity, bool $flush = false): void
+    public function save(Category $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CoursePurchasesRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(CoursePurchases $entity, bool $flush = false): void
+    public function remove(Category $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CoursePurchasesRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return CoursePurchases[] Returns an array of CoursePurchases objects
+//     * @return Category[] Returns an array of Category objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CoursePurchasesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?CoursePurchases
+//    public function findOneBySomeField($value): ?Category
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

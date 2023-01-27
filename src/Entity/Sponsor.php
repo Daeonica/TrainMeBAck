@@ -2,15 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\SponsorsRepository;
+use App\Repository\SponsorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SponsorsRepository::class)]
-#[ApiResource]
-class Sponsors
+#[ORM\Entity(repositoryClass: SponsorRepository::class)]
+class Sponsor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,10 +24,10 @@ class Sponsors
     #[ORM\Column(length: 9)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 500)]
     private ?string $email = null;
 
-    #[ORM\OneToMany(mappedBy: 'sponsor_id', targetEntity: Contabilities::class)]
+    #[ORM\OneToMany(mappedBy: 'sponsor', targetEntity: Contability::class)]
     private Collection $contabilities;
 
     public function __construct()
@@ -91,29 +89,29 @@ class Sponsors
     }
 
     /**
-     * @return Collection<int, Contabilities>
+     * @return Collection<int, Contability>
      */
     public function getContabilities(): Collection
     {
         return $this->contabilities;
     }
 
-    public function addContability(Contabilities $contability): self
+    public function addContability(Contability $contability): self
     {
         if (!$this->contabilities->contains($contability)) {
             $this->contabilities->add($contability);
-            $contability->setSponsorId($this);
+            $contability->setSponsor($this);
         }
 
         return $this;
     }
 
-    public function removeContability(Contabilities $contability): self
+    public function removeContability(Contability $contability): self
     {
         if ($this->contabilities->removeElement($contability)) {
             // set the owning side to null (unless already changed)
-            if ($contability->getSponsorId() === $this) {
-                $contability->setSponsorId(null);
+            if ($contability->getSponsor() === $this) {
+                $contability->setSponsor(null);
             }
         }
 
