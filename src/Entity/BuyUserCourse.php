@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\CoursePurchasesRepository;
+use App\Repository\BuyUserCourseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CoursePurchasesRepository::class)]
-#[ApiResource]
-class CoursePurchases
+#[ORM\Entity(repositoryClass: BuyUserCourseRepository::class)]
+class BuyUserCourse
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,11 +17,13 @@ class CoursePurchases
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $transaction_date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'CoursePurchases')]
-    private ?courses $course_id = null;
+    #[ORM\ManyToOne(inversedBy: 'buyUserCourses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'CoursePurchases')]
-    private ?users $user_id = null;
+    #[ORM\ManyToOne(inversedBy: 'buyUserCourses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Course $course = null;
 
     public function getId(): ?int
     {
@@ -42,26 +42,26 @@ class CoursePurchases
         return $this;
     }
 
-    public function getIdCourse(): ?courses
+    public function getUser(): ?User
     {
-        return $this->course_id;
+        return $this->user;
     }
 
-    public function setIdCourse(?courses $course_id): self
+    public function setUser(?User $user): self
     {
-        $this->course_id = $course_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getIdUser(): ?users
+    public function getCourse(): ?Course
     {
-        return $this->user_id;
+        return $this->course;
     }
 
-    public function setIdUser(?users $user_id): self
+    public function setCourse(?Course $course): self
     {
-        $this->user_id = $user_id;
+        $this->course = $course;
 
         return $this;
     }

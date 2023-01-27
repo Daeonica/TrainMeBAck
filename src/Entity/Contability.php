@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\ContabilitiesRepository;
+use App\Repository\ContabilityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ContabilitiesRepository::class)]
-#[ApiResource]
-class Contabilities
+#[ORM\Entity(repositoryClass: ContabilityRepository::class)]
+class Contability
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,12 +20,11 @@ class Contabilities
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $quantity = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 500)]
     private ?string $concept = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Contabilities')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?sponsors $sponsor_id = null;
+    #[ORM\ManyToOne(inversedBy: 'contabilities')]
+    private ?Sponsor $sponsor = null;
 
     public function getId(): ?int
     {
@@ -63,21 +60,21 @@ class Contabilities
         return $this->concept;
     }
 
-    public function setConcept(?string $concept): self
+    public function setConcept(string $concept): self
     {
         $this->concept = $concept;
 
         return $this;
     }
 
-    public function getSponsorId(): ?sponsors
+    public function getSponsor(): ?Sponsor
     {
-        return $this->sponsor_id;
+        return $this->sponsor;
     }
 
-    public function setSponsorId(?sponsors $sponsor_id): self
+    public function setSponsor(?Sponsor $sponsor): self
     {
-        $this->sponsor_id = $sponsor_id;
+        $this->sponsor = $sponsor;
 
         return $this;
     }
