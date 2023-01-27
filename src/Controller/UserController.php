@@ -47,21 +47,21 @@ class UserController extends AbstractController
                 } else {
                     $return = [
                         'status' => 'error',
-                        'code' => 404,
+                        'code' => 400,
                         'messages' => 'La contraseña no coincide'
                     ];
                 }
             } else {
                 $return = [
                     'status' => 'error',
-                    'code' => 404,
+                    'code' => 400,
                     'messages' => 'No existe usuario con este email'
                 ];
             }
         } else {
             $return = [
                 'status' => 'error',
-                'code' => 404,
+                'code' => 400,
                 'messages' => 'No has añadido ningún campo'
             ];
         }
@@ -106,7 +106,6 @@ class UserController extends AbstractController
                                 "code" => '400',
                             ];
                             $return['messages'][] = 'La contraseña no es válida';
-
                         }
                     } else {
                         $return = [
@@ -127,7 +126,6 @@ class UserController extends AbstractController
                         "code" => '400',
                     ];
                     $return["messages"][] = "El email ya existe";
-
                 }
             } else {
                 $return = [
@@ -180,19 +178,19 @@ class UserController extends AbstractController
                 $return = [
                     "code" => '200',
                     "status" => 'success',
-                    "messages" => 'El usuario ha sido eliminado correctamente'
                 ];
+                $return['messages'][] = 'El usuario ha sido eliminado correctamente';
             } else {
                 $return = [
-                    "code" => '404',
+                    "code" => '400',
                     "status" => 'error',
-                    "messages" => 'El usuario no se encuentra'
                 ];
+                $return['messages'][] = 'El usuario no se encuentra';
             }
         } else {
             $return['code'] = '400';
             $return['status'] = 'error';
-            $return['messages'] = 'Campos vacíos';
+            $return['messages'][] = 'Campos vacíos';
         }
         return new JsonResponse($return);
     }
@@ -215,13 +213,11 @@ class UserController extends AbstractController
                             "user" => $array,
                             "status" => 'success',
                             "code" => '200',
-                            "messages" => []
                         ];
                     } else {
                         $return = [
                             "status" => 'error',
                             "code" => '400',
-                            "messages" => []
                         ];
                         if ($this->hasNumber($array['name'])) {
                             $return["messages"][] = "El nombre no es válido";
@@ -234,8 +230,8 @@ class UserController extends AbstractController
                     $return = [
                         "status" => 'error',
                         "code" => '400',
-                        "messages" => []
                     ];
+                    $return["messages"][] = "Los datos están vaciós";
                 }
 
                 if (!empty($array['email'])) {
@@ -264,12 +260,17 @@ class UserController extends AbstractController
             } else {
                 $return = [
                     "status" => 'error',
-                    "code" => '404',
-                    "messages" => ['No se ha podido identificar al usuario']
+                    "code" => '400',
                 ];
+                $return['messages'][] = 'No se ha podido identificar al usuario';
+
             }
         } else {
-            $return = ['Campos vacíos'];
+            $return = [
+                "status" => 'error',
+                "code" => '400',
+            ];
+            $return['messages'][] = 'No hay datos';
         }
 
 
