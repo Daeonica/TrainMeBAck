@@ -48,6 +48,20 @@ class User
         $this->courses = new ArrayCollection();
     }
 
+    public function getDataInArray(){
+        $array = [
+            "id" => $this->id,
+            "name" => $this->name,
+            "surname" => $this->surname,
+            "email" => $this->email,
+            "password" => $this->getPassword(),
+            "img_path" => $this->img_path,
+            "register_date" => $this->register_date,
+            "role_id" => $this->getRole()->getId()
+        ];
+        return $array;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
