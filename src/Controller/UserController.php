@@ -86,9 +86,6 @@ class UserController extends AbstractController
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
                                 $user->setRegisterDate(new \DateTime);
 
-                                if (isset($array['description'])) {
-                                    $user->setDescription($array['description']);
-                                }
 
                                 if (isset($array['role_id'])) {
                                     $role = $this->roleRepository->findOneBy(['key_value' => $array['role_id']]);
@@ -227,6 +224,9 @@ class UserController extends AbstractController
                     if (!$this->hasNumber($array['name']) && !$this->hasNumber($array['surname'])) {
                         $user->setName($array['name']);
                         $user->setSurname($array['surname']);
+                        if (isset($array['description'])) {
+                            $user->setDescription($array['description']);
+                        }
                         $return = [
                             "user" => $array,
                             "status" => 'success',
