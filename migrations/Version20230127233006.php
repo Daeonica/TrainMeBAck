@@ -24,7 +24,7 @@ final class Version20230127233006 extends AbstractMigration
         $this->addSql('ALTER TABLE contability CHANGE sponsor_id sponsor_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE course CHANGE img_path img_path VARCHAR(500) NOT NULL');
         $this->addSql('ALTER TABLE publication CHANGE category_id category_id INT DEFAULT NULL, CHANGE user_id user_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE user ADD description VARCHAR(500) DEFAULT NULL, CHANGE img_path img_path VARCHAR(500) NOT NULL');
+        $this->addSql('ALTER TABLE user ADD description VARCHAR(500) DEFAULT NULL, CHANGE img_path img_path VARCHAR(500) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
