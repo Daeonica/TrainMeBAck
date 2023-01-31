@@ -26,7 +26,7 @@ class UserController extends AbstractController
 
 
 
-    #[Route('/user/login', name: 'user.login', methods:['POST'])]
+    #[Route('/user/login', name: 'user.login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -89,7 +89,7 @@ class UserController extends AbstractController
 
                                 if (isset($array['role_id'])) {
                                     $role = $this->roleRepository->findOneBy(['key_value' => $array['role_id']]);
-                                }else {
+                                } else {
                                     $role = $this->roleRepository->findOneBy(['key_value' => 'super_admin']);
                                     if ($role == null) {
                                         $role = new Role();
@@ -101,7 +101,7 @@ class UserController extends AbstractController
                                 $user->setRole($role);
                                 $this->userRepository->save($user, true);
                                 unset($array);
-                                
+
                                 $return = [
                                     "user" => $user->getDataInArray(),
                                     "status" => 'success',
@@ -219,69 +219,75 @@ class UserController extends AbstractController
         if ($json != null) {
             $array = json_decode($json, true);
             $user = $this->userRepository->find($array['id']);
+
             if ($user != null) {
-                if (!empty($array['name']) && !empty($array['surname'])) {
-                    if (!$this->hasNumber($array['name']) && !$this->hasNumber($array['surname'])) {
+
+                if (!empty($array['name'])) {
+                    if (!$this->hasNumber($array['name'])) {
                         $user->setName($array['name']);
-                        $user->setSurname($array['surname']);
-                        if (isset($array['description'])) {
-                            $user->setDescription($array['description']);
-                        }
-                        $return = [
-                            "user" => $array,
-                            "status" => 'success',
-                            "code" => '200',
-                        ];
+                        $return["status"] = 'success';
+                        $return["code"] = '200';
                     } else {
                         $return = [
                             "status" => 'error',
                             "code" => '400',
                         ];
-                        if ($this->hasNumber($array['name'])) {
-                            $return["messages"][] = "El nombre no es válido";
-                        };
-                        if ($this->hasNumber($array['surname'])) {
-                            $return["messages"][] = "El apellido no es válido";
-                        };
-                    };
-                } else {
-                    $return = [
-                        "status" => 'error',
-                        "code" => '400',
-                    ];
-                    $return["messages"][] = "Los datos están vaciós";
+                        $return["messages"][] = 'El formato del nombre no es correcto';
+                    }
+                }
+
+                if (!empty($array['surname'])) {
+                    if (!$this->hasNumber($array['surname'])) {
+                        $user->setSurname($array['surname']);
+                        $return["status"] = 'success';
+                        $return["code"] = '200';
+                    } else {
+                        $return = [
+                            "status" => 'error',
+                            "code" => '400',
+                        ];
+                        $return["messages"][] = 'El formato del apellido no es correcto';
+                    }
+                }
+
+                if (!empty($array['description'])) {
+                    $user->setDescription($array['description']);
+                    $return["status"] = 'success';
+                    $return["code"] = '200';
                 }
 
                 if (!empty($array['email'])) {
                     if ($user->getEmail() != $array['email']) {
                         if ($this->userRepository->findOneBy(['email' => $array['email']]) == null) {
                             $user->setEmail($array['email']);
-                            $return = [
-                                "user" => $user->getDataInArray(),
-                                "status" => 'success',
-                                "code" => '200',
-                            ];
+                            $return["status"] = 'success';
+                            $return["code"] = '200';
                         } else {
                             $return = [
                                 "status" => 'error',
                                 "code" => '400',
                             ];
-                            $return["messages"][] = 'Email ya existe';
+                            $return['messages'][] = 'Ya existe usuario con este email';
                         }
                     }
                 }
 
+
+
+
                 if ($return['code'] == '200') {
+
                     $this->userRepository->save($user, true);
                     $return['messages'][] = 'El usuario ha sido actualizado correctamente';
+                    $return['user'] = $user->getDataInArray();
                 }
+
             } else {
                 $return = [
                     "status" => 'error',
                     "code" => '400',
                 ];
                 $return['messages'][] = 'No se ha podido identificar al usuario';
-
             }
         } else {
             $return = [
@@ -290,7 +296,6 @@ class UserController extends AbstractController
             ];
             $return['messages'][] = 'No hay datos';
         }
-
 
         return new JsonResponse($return);
     }
@@ -331,11 +336,12 @@ class UserController extends AbstractController
     }
 
     #[Route('/about_us', name: 'about_us', methods: ['GET'])]
-    public function aboutUs(){
+    public function aboutUs()
+    {
         $role = $this->roleRepository->findOneBy(['key_value' => 'super_Admin']);
         $users = $role->getUsers()->toArray();
         $return = [];
-        foreach($users as $user){
+        foreach ($users as $user) {
             $return[] = $user->getDataInArray();
         }
         return new JsonResponse($return);
