@@ -219,6 +219,7 @@ class UserController extends AbstractController
         if ($json != null) {
             $array = json_decode($json, true);
             $user = $this->userRepository->find($array['id']);
+
             if ($user != null) {
 
                 if (!empty($array['name'])) {
@@ -237,7 +238,7 @@ class UserController extends AbstractController
 
                 if (!empty($array['surname'])) {
                     if (!$this->hasNumber($array['surname'])) {
-                        $user->setName($array['surname']);
+                        $user->setSurname($array['surname']);
                         $return["status"] = 'success';
                         $return["code"] = '200';
                     } else {
@@ -275,8 +276,10 @@ class UserController extends AbstractController
 
 
                 if ($return['code'] == '200') {
+
                     $this->userRepository->save($user, true);
                     $return['messages'][] = 'El usuario ha sido actualizado correctamente';
+                    $return['user'] = $user->getDataInArray();
                 }
 
             } else {
