@@ -13,19 +13,27 @@ use Symfony\Component\Serializer\SerializerInterface;
 class RoleController extends AbstractController
 {
     private $serializer;
-    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, SerializerInterface $serializer)
+    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository)
     {
-        $this->serializer = $serializer;
+        
     }
 
 
 
-    #[Route('/user/register', name: 'user.register', methods: ['GET'])]
+    #[Route('/roles/get', name: '', methods: ['GET'])]
     public function returnRoles():JsonResponse{
         
-        $allRoles = $this->roleRepository->findAll();
+        $rolesJson = $this->roleRepository->findAll();
+        $roles = [];
 
-        return new JsonResponse($allRoles); 
+        
+        foreach ($rolesJson as $rol) {
+            $roles[] = $rol->getDataInArray();
+        }
+
+        
+
+        return new JsonResponse($roles); 
     }
 }
 
