@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\DateTime as ConstraintsDateTime;
 
 class UserController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository)
+    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, private RoleController $roleController)
     {
     }
 
@@ -29,6 +29,7 @@ class UserController extends AbstractController
     #[Route('/user/login', name: 'user.login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
+        
         $json = $request->get('data', null);
         $return = [];
         if ($json != null) {
@@ -67,6 +68,7 @@ class UserController extends AbstractController
         }
         return new JsonResponse($return);
     }
+    
 
     #[Route('/user/register', name: 'user.register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
@@ -108,6 +110,7 @@ class UserController extends AbstractController
                                     "code" => '200',
                                 ];
                                 $return['messages'][] = 'Usuario registrado correctamente';
+                                
                             } else {
                                 $return = [
                                     "status" => 'error',
@@ -169,6 +172,8 @@ class UserController extends AbstractController
 
         return new JsonResponse($return);
     }
+
+    
 
     public function hasNumber($data)
     {
