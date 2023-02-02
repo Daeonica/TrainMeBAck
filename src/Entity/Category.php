@@ -32,6 +32,14 @@ class Category
         $this->publications = new ArrayCollection();
     }
 
+    public function getDataInArray(){
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description
+        ];
+    }
+
     public function getId(): ?int
     {
         return $this->id;
