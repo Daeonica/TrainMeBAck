@@ -88,18 +88,7 @@ class UserController extends AbstractController
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
                                 $user->setRegisterDate(new \DateTime);
 
-
-                                if (isset($array['role_id'])) {
-                                    $role = $this->roleRepository->findOneBy(['key_value' => $array['role_id']]);
-                                } else {
-                                    $role = $this->roleRepository->findOneBy(['key_value' => 'super_admin']);
-                                    if ($role == null) {
-                                        $role = new Role();
-                                        $role->setName('super_admin');
-                                        $role->setKeyValue('super_admin');
-                                        $this->roleRepository->save($role, true);
-                                    }
-                                }
+                                $role = $this->roleRepository->findOneBy(['key_value' => $array['role']['id']]);                           
                                 $user->setRole($role);
                                 $this->userRepository->save($user, true);
                                 unset($array);
