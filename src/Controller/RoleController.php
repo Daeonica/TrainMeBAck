@@ -21,14 +21,14 @@ class RoleController extends AbstractController
 
 
     #[Route('/roles/get', name: '', methods: ['GET'])]
-    public function returnRoles():JsonResponse{
+    public function getRoles():JsonResponse{
         
         $rolesJson = $this->roleRepository->findAll();
         $roles = [];
 
         
-        foreach ($rolesJson as $rol) {
-            $roles[] = $rol->getDataInArray();
+        foreach ($rolesJson as $role) {
+            $roles[] = $role->getDataInArray();
         }
 
         

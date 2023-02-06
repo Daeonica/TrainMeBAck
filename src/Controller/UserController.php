@@ -73,31 +73,56 @@ class UserController extends AbstractController
     #[Route('/user/register', name: 'user.register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
     {
+        // Getting all data by Request with 'data' access key, if access key not exists then $json have null value
         $json = $request->get('data', null);
+
+        // If $json is different to null, then exists parameters from data key access
         if ($json != null) {
+
+            // When we get data, this data is in JSON format, for this reason, we have to decode, in the second parameter have to put true for accept Associate array
             $array = json_decode($json, true);
+
+            // Now have to validate if the required data is not empty
             if (!empty($array['name']) && !empty($array['surname']) && !empty($array['email'])) {
+
+                // After validation, we try to find the received email by Request with UserRepository, with findOnBy(['table_attribtue' => 'attribute_value'])
+                // If this user is null, then can continue the register process.
                 if ($this->userRepository->findOneBy(['email' => $array['email']]) == null) {
+
+                    // Extra validation if name and surname have numbers, if password and confirmPassword is same..
+                    // The hasNumber() function is created in this file, return true or false.
                     if (!$this->hasNumber($array['name']) && !$this->hasNumber($array['surname'])) {
                         if ($array['password'] != '') {
                             if ($array['password'] == $array['confirmPassword']) {
+
+                                // If all is okey, then create User object, and add all attributes
                                 $user = new User();
                                 $user->setName($array['name']);
                                 $user->setSurname($array['surname']);
                                 $user->setEmail($array['email']);
+
+                                // Allways save hashed password
                                 $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
                                 $user->setRegisterDate(new \DateTime);
 
-                                $role = $this->roleRepository->find($array['role']['id']);                           
+                                // Also, when we get data in Request, we receive role with her id
+                                // Where we are searching role with by id. (I forgot to validate if exists or not the role id)
+                                $role = $this->roleRepository->find($array['role']['id']);           
+                                
+                                // In User Entity, you can look we have a setRole function
+                                // This function is just for save role, sending in the parameter the Role Entity !!important (send Entity, not just role id)
                                 $user->setRole($role);
                                 $this->userRepository->save($user, true);
                                 unset($array);
 
                                 $return = [
+                                    // getDataInArray() is customed function for get all user data in array type than object type
                                     "user" => $user->getDataInArray(),
                                     "status" => 'success',
                                     "code" => '200',
                                 ];
+
+                                // In messages, allways we make with this estandar, because is more easy to loop all errors in the FrontEnd 
                                 $return['messages'][] = 'Usuario registrado correctamente';
                                 
                             } else {
@@ -158,6 +183,8 @@ class UserController extends AbstractController
             $return['messages'] = 'Campos vacíos';
         }
 
+
+        // Finally, we return all data in $return variable
 
         return new JsonResponse($return);
     }
