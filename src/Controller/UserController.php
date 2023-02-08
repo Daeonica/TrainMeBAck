@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CustomerSupport;
 use App\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use App\Repository\RoleRepository;
+use App\Repository\CustomerSupportRepository;
 use DateTime;
 use DateTimeInterface;
 use Monolog\DateTimeImmutable;
@@ -20,7 +22,7 @@ use Symfony\Component\Validator\Constraints\DateTime as ConstraintsDateTime;
 
 class UserController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, private RoleController $roleController)
+    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, private RoleController $roleController, private CustomerSupportRepository $customerSupportRepository)
     {
     }
 
@@ -373,4 +375,39 @@ class UserController extends AbstractController
         }
         return new JsonResponse($return);
     }
+
+    #[Route('/contact', name: 'contact', methods: ['POST'])]
+    public function contact(Request $request)
+    {
+        $json = $request->get('data', null);
+        $return = [];
+        if($json != null){
+            $array = json_decode($json);
+            $contact = new CustomerSupport();
+            //seteamos los atributos con cada campo del array
+            $contact->setName($array['name']);
+            $contact->setName($array['email']);
+            $contact->setName($array['description']);
+            
+            //guardamos en la bbdd $this->contactRepository->save($contact, true);
+            $contact= $this->customerSupportRepository->save($contact, true);
+            $return["status"] = 'success';
+            $return["code"] = '200';
+            $return["message"][] = 'En breve será atendido, gracias por el feedback';
+        }else{
+            $return["status"] = 'error';
+            $return["code"] = '400';
+            $return["message"][] = 'No hay datos';
+            //retornamos mensaje de error con su codigo en el array de $return
+        }
+        
+        return new JsonResponse($return);
+    }
+
+
+    
 }
+
+
+
+    
