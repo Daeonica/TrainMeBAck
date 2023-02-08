@@ -30,16 +30,16 @@ class UserController extends AbstractController
     public function login(Request $request): JsonResponse
     {
         
-        $json = $request->get('data', null);
+        $json = $request->get('data', null); //recogemos los datos y los convertimos en json
         $return = [];
         if ($json != null) {
-            $array = json_decode($json, true);
+            $array = json_decode($json, true); //transformamos el json a array para acceder a los indices
             $email = $array['email'];
             $password = $array['password'];
-            $userByEmail = $this->userRepository->findOneBy(['email' => $email]);
-            if ($userByEmail != null) {
+            $userByEmail = $this->userRepository->findOneBy(['email' => $email]); //findOneBy sirve para comparar si hay, en este caso un email, igual
+            if ($userByEmail != null) { //si encuentra una coincidencia
                 if (password_verify($password, $userByEmail->getPassword())) {
-                    $return = [
+                    $return = [ //si la contraseña tambien coincide entra
                         'status' => 'success',
                         'code' => 200,
                         'messages' => 'Usuario logueado correctamente',
@@ -53,6 +53,7 @@ class UserController extends AbstractController
                     ];
                 }
             } else {
+                //el email no existe
                 $return = [
                     'status' => 'error',
                     'code' => 400,
@@ -60,12 +61,14 @@ class UserController extends AbstractController
                 ];
             }
         } else {
+            //no se ha añadido ningun campo
             $return = [
                 'status' => 'error',
                 'code' => 400,
                 'messages' => 'No has añadido ningún campo'
             ];
         }
+        //enviamos la respuesta a angular
         return new JsonResponse($return);
     }
     
@@ -204,9 +207,11 @@ class UserController extends AbstractController
     #[Route('/user/delete', name: 'user.delete', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
+        //recibimos los datos en un json
         $json = $request->get('data', null);
         $return = [];
         if ($json != null) {
+            //transformamos los datos a array
             $array = json_decode($json, true);
             $user = $this->userRepository->find($array['id']);
             if ($user != null) {
@@ -224,6 +229,7 @@ class UserController extends AbstractController
                 $return['messages'][] = 'El usuario no se encuentra';
             }
         } else {
+            //si los datos recibidos estan vacios
             $return['code'] = '400';
             $return['status'] = 'error';
             $return['messages'][] = 'Campos vacíos';
