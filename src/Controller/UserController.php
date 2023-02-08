@@ -387,10 +387,11 @@ class UserController extends AbstractController
             $contact= $this->customerSupportRepository->save($contact, true);
             $return["status"] = 'success';
             $return["code"] = '200';
+            $return["message"][] = 'En breve será atendido, gracias por el feedback';
         }else{
             $return["status"] = 'error';
             $return["code"] = '400';
-            $return["message"] = 'no hay datos';
+            $return["message"][] = 'No hay datos';
             //retornamos mensaje de error con su codigo en el array de $return
         }
         
