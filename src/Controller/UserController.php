@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints\DateTime as ConstraintsDateTime;
 
 class UserController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, private RoleController $roleController, private CustomerSupportRepository $customerSupportRepository)
+    public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, private CustomerSupportRepository $customerSupportRepository)
     {
     }
 
