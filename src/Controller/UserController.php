@@ -382,12 +382,12 @@ class UserController extends AbstractController
         $json = $request->get('data', null);
         $return = [];
         if($json != null){
-            $array = json_decode($json);
+            $array = json_decode($json,true);
             $contact = new CustomerSupport();
-            //seteamos los atributos con cada campo del array
+            //seteamos los atributos con cada campo del 
+            $contact->setEmail($array['email']);
             $contact->setName($array['name']);
-            $contact->setName($array['email']);
-            $contact->setName($array['description']);
+            $contact->setDescription($array['message']);
             
             //guardamos en la bbdd $this->contactRepository->save($contact, true);
             $contact= $this->customerSupportRepository->save($contact, true);
