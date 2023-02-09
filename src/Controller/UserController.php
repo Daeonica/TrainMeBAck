@@ -367,7 +367,7 @@ class UserController extends AbstractController
     #[Route('/about_us', name: 'about_us', methods: ['GET'])]
     public function aboutUs()
     {
-        $role = $this->roleRepository->findOneBy(['key_value' => 'super_Admin']);
+        $role = $this->roleRepository->findOneBy(['key_value' => 'admin']);
         $users = $role->getUsers()->toArray();
         $return = [];
         foreach ($users as $user) {
