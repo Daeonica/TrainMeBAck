@@ -61,7 +61,7 @@ class User
             "description" => $this->description,
             "img_path" => $this->img_path,
             "register_date" => $this->register_date,
-            "role_id" => $this->getRole()->getId()
+            "role" => $this->getRole()->getDataInArray()
         ];
         return $array;
     }
