@@ -31,7 +31,7 @@ class UserController extends AbstractController
     #[Route('/user/login', name: 'user.login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
-        
+
         $json = $request->get('data', null); //recogemos los datos y los convertimos en json
         $return = [];
         if ($json != null) {
@@ -51,7 +51,7 @@ class UserController extends AbstractController
                     $return = [
                         'status' => 'error',
                         'code' => 400,
-                        'messages' => 'La contraseña no coincide'
+                        'messages' => ['La contraseña no coincide']
                     ];
                 }
             } else {
@@ -59,7 +59,7 @@ class UserController extends AbstractController
                 $return = [
                     'status' => 'error',
                     'code' => 400,
-                    'messages' => 'No existe usuario con este email'
+                    'messages' => ['No existe usuario con este email']
                 ];
             }
         } else {
@@ -67,13 +67,13 @@ class UserController extends AbstractController
             $return = [
                 'status' => 'error',
                 'code' => 400,
-                'messages' => 'No has añadido ningún campo'
+                'messages' => ['No has añadido ningún campo']
             ];
         }
         //enviamos la respuesta a angular
         return new JsonResponse($return);
     }
-    
+
 
     #[Route('/user/register', name: 'user.register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
@@ -112,8 +112,8 @@ class UserController extends AbstractController
 
                                 // Also, when we get data in Request, we receive role with her id
                                 // Where we are searching role with by id. (I forgot to validate if exists or not the role id)
-                                $role = $this->roleRepository->find($array['role']['id']);           
-                                
+                                $role = $this->roleRepository->find($array['role']['id']);
+
                                 // In User Entity, you can look we have a setRole function
                                 // This function is just for save role, sending in the parameter the Role Entity !!important (send Entity, not just role id)
                                 $user->setRole($role);
@@ -129,7 +129,6 @@ class UserController extends AbstractController
 
                                 // In messages, allways we make with this estandar, because is more easy to loop all errors in the FrontEnd 
                                 $return['messages'][] = 'Usuario registrado correctamente';
-                                
                             } else {
                                 $return = [
                                     "status" => 'error',
@@ -194,7 +193,7 @@ class UserController extends AbstractController
         return new JsonResponse($return);
     }
 
-    
+
 
     public function hasNumber($data)
     {
@@ -301,16 +300,25 @@ class UserController extends AbstractController
                     }
                 }
 
-
-
+                if (!empty($array['password']) && !empty($array['confirmPassword'])) {
+                    if ($array['password'] == $array['confirmPassword']) {
+                        $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
+                        $return["status"] = 'success';
+                        $return["code"] = '200';
+                    } else {
+                        $return = [
+                            "status" => 'error',
+                            "code" => '400',
+                        ];
+                        $return['messages'][] = 'La contraseña no es idéntica';
+                    }
+                }
 
                 if ($return['code'] == '200') {
-
                     $this->userRepository->save($user, true);
                     $return['messages'][] = 'El usuario ha sido actualizado correctamente';
                     $return['user'] = $user->getDataInArray();
                 }
-
             } else {
                 $return = [
                     "status" => 'error',
@@ -381,33 +389,26 @@ class UserController extends AbstractController
     {
         $json = $request->get('data', null);
         $return = [];
-        if($json != null){
-            $array = json_decode($json,true);
+        if ($json != null) {
+            $array = json_decode($json, true);
             $contact = new CustomerSupport();
             //seteamos los atributos con cada campo del 
             $contact->setEmail($array['email']);
             $contact->setName($array['name']);
             $contact->setDescription($array['message']);
-            
+
             //guardamos en la bbdd $this->contactRepository->save($contact, true);
-            $contact= $this->customerSupportRepository->save($contact, true);
+            $contact = $this->customerSupportRepository->save($contact, true);
             $return["status"] = 'success';
             $return["code"] = '200';
             $return["message"][] = 'En breve será atendido, gracias por el feedback';
-        }else{
+        } else {
             $return["status"] = 'error';
             $return["code"] = '400';
             $return["message"][] = 'No hay datos';
             //retornamos mensaje de error con su codigo en el array de $return
         }
-        
+
         return new JsonResponse($return);
     }
-
-
-    
 }
-
-
-
-    

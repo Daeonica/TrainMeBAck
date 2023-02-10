@@ -92,7 +92,7 @@ class Role
         $array = [
             "id" => $this->id,
             "name" => $this->name,
-            "surname" => $this->key_value
+            "key_value" => $this->key_value
         ];
         return $array;
     }
