@@ -40,20 +40,20 @@ class CourseController extends AbstractController
                 $return = [
                     'status'=>'success',
                     'code'=>200,
-                    'messages'=>['El curso ha sido creado con éxito']
+                    'messagess'=>['El curso ha sido creado con éxito']
                 ];
             }else {
                 $return = [
                     'status'=>'error',
                     'code'=>400,
-                    'messages'=>['Hay algún campo vacio']
+                    'messagess'=>['Hay algún campo vacio']
                 ]; 
             }
        }else{
             $return = [
                 'status'=>'error',
                 'code'=>400,
-                'messages'=>['json vacío']
+                'messagess'=>['json vacío']
             ];
        }
        return new JsonResponse($return);
@@ -74,20 +74,20 @@ class CourseController extends AbstractController
                 $return = [
                     'code' => '200',
                     'status' => 'success',
-                    'message' => ['El curso ha sido eliminado con éxito']
+                    'messages' => ['El curso ha sido eliminado con éxito']
                 ];
             }else{
                 $return = [
                     "code" => '400',
                     "status" => 'error',
-                    'message' => ['El curso no existe']
+                    'messages' => ['El curso no existe']
                 ];    
             } 
         }else {
             $return = [
                 'code' => '400',
                 'status' => 'error',
-                'message' => ['Campos vacios']
+                'messages' => ['Campos vacios']
             ];
         }
 
@@ -133,14 +133,14 @@ class CourseController extends AbstractController
                     $return = [
                         'status' => 'success',
                         'code' => '200',
-                        'message' => ['curso actualizado con éxito']
+                        'messages' => ['curso actualizado con éxito']
                     ];
                 }
             } else {
                 $return = [
                     "status" => 'error',
                     "code" => '400',
-                    'message' => ['No hay datos']
+                    'messages' => ['No hay datos']
                 ];
             }
         }
