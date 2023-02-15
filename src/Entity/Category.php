@@ -21,8 +21,6 @@ class Category
     #[ORM\Column(length: 500)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'category')]
-    private ?Course $course = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Publication::class)]
     private Collection $publications;
@@ -69,18 +67,6 @@ class Category
         return $this;
     }
 
-    public function getCourse(): ?Course
-    {
-        return $this->course;
-    }
-
-    public function setCourse(?Course $course): self
-    {
-        $this->course = $course;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Publication>
      */
@@ -98,6 +84,7 @@ class Category
 
         return $this;
     }
+
 
     public function removePublication(Publication $publication): self
     {
