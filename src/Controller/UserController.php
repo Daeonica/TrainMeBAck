@@ -26,52 +26,26 @@ class UserController extends AbstractController
     {
     }
 
+    #[Route('/user/all-users', name: 'user.alluser', methods: ['GET'])]
+    public function getAllUsers(){
+
+        $users = [];
+        $models = $this->userRepository->findAll();
+        foreach($models as $model){
+            $users[] = $model->getDataInArray();
+        }
+        return new JsonResponse($users);
+    }
 
 
-    #[Route('/user/login', name: 'user.login', methods: ['POST'])]
-    public function login(Request $request): JsonResponse
+
+    #[Route('/user/get-by-id/{id}', name: 'user.login', methods: ['GET'])]
+    public function getUserById($id, Request $request): JsonResponse
     {
 
-        $json = $request->get('data', null); //recogemos los datos y los convertimos en json
-        $return = [];
-        if ($json != null) {
-            $array = json_decode($json, true); //transformamos el json a array para acceder a los indices
-            $email = $array['email'];
-            $password = $array['password'];
-            $userByEmail = $this->userRepository->findOneBy(['email' => $email]); //findOneBy sirve para comparar si hay, en este caso un email, igual
-            if ($userByEmail != null) { //si encuentra una coincidencia
-                if (password_verify($password, $userByEmail->getPassword())) {
-                    $return = [ //si la contraseña tambien coincide entra
-                        'status' => 'success',
-                        'code' => 200,
-                        'messages' => 'Usuario logueado correctamente',
-                        'user' => $userByEmail->getDataInArray()
-                    ];
-                } else {
-                    $return = [
-                        'status' => 'error',
-                        'code' => 400,
-                        'messages' => ['La contraseña no coincide']
-                    ];
-                }
-            } else {
-                //el email no existe
-                $return = [
-                    'status' => 'error',
-                    'code' => 400,
-                    'messages' => ['No existe usuario con este email']
-                ];
-            }
-        } else {
-            //no se ha añadido ningun campo
-            $return = [
-                'status' => 'error',
-                'code' => 400,
-                'messages' => ['No has añadido ningún campo']
-            ];
-        }
-        //enviamos la respuesta a angular
-        return new JsonResponse($return);
+        $user = $this->userRepository->find($id)->getDataInArray();
+        
+        return new JsonResponse($user);
     }
 
 
