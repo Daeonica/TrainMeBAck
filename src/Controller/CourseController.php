@@ -150,8 +150,12 @@ class CourseController extends AbstractController
     #[Route('/course/all', name: 'course.getCourses', methods: ['GET'])]
     public function getCourses(Request $request)
     {   
+        $response = [];
+        $courses= $this->courseRepository->findAll();
 
-        $response = $this->courseRepository->findAll();
+        foreach ($courses as $course) {
+            $response[] = $course->getDataInArray();
+        }
         return $response;
 
     }
@@ -160,7 +164,13 @@ class CourseController extends AbstractController
     public function getCoursesUser($id, Request $request)
     {
         $user = $this->userRepository->find($id);
-        $response = $user->getCourses();
+        $courses = $user->getCourses();
+        $response = [];
+
+        foreach ($courses as $course) {
+            $response[] = $course->getDataInArray();
+        }
+        
         return $response;
 
     }

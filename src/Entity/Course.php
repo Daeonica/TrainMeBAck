@@ -183,4 +183,19 @@ class Course
 
         return $this;
     }
+
+    public function getDataInArray(){
+        $array = [
+            "id" => $this->id,
+            "name" => $this->name,
+            "description" => $this->description,
+            "document_root" => $this->document_root,
+            "price" => $this->price,
+            "img_path" => $this->img_path,
+            "user" => $this->user,
+            "category" => $this->category,
+            "buy_user_courses" => $this->buyUserCourses
+        ];
+        return $array;
+    }
 }
