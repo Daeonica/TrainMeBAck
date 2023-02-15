@@ -35,15 +35,15 @@ class Course
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Category::class)]
-    private Collection $category;
+    #[ORM\ManyToOne(inversedBy: 'courses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: BuyUserCourse::class)]
     private Collection $buyUserCourses;
 
     public function __construct()
     {
-        $this->category = new ArrayCollection();
         $this->buyUserCourses = new ArrayCollection();
     }
 
@@ -124,35 +124,13 @@ class Course
         return $this;
     }
 
-    /**
-     * @return Collection<int, Category>
-     */
-    public function getCategory(): Collection
+
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function addCategory(Category $category): self
-    {
-        if (!$this->category->contains($category)) {
-            $this->category->add($category);
-            $category->setCourse($this);
-        }
 
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        if ($this->category->removeElement($category)) {
-            // set the owning side to null (unless already changed)
-            if ($category->getCourse() === $this) {
-                $category->setCourse(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, BuyUserCourse>
@@ -192,9 +170,9 @@ class Course
             "document_root" => $this->document_root,
             "price" => $this->price,
             "img_path" => $this->img_path,
-            "user" => $this->user,
-            "category" => $this->category,
-            "buy_user_courses" => $this->buyUserCourses
+            "user" => $this->user->getDataInArray(),
+            "category" => $this->category->getDataInArray(),
+            "buy_user_courses" => $this->buyUserCourses,
         ];
         return $array;
     }
