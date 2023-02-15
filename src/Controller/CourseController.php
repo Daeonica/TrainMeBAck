@@ -147,12 +147,6 @@ class CourseController extends AbstractController
                     $return["code"] = '200';
                 }
 
-                if (!empty($array['imgPath'])) {
-                    $course->setImgPath($array['imgPath']);
-                    $return["status"] = 'success';
-                    $return["code"] = '200';
-                }
-
                 if ($return['code'] == '200') {
                     $this->courseRepository->save($course, true);
                     $return = [
