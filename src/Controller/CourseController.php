@@ -156,7 +156,7 @@ class CourseController extends AbstractController
         foreach ($courses as $course) {
             $response[] = $course->getDataInArray();
         }
-        return $response;
+        return new JsonResponse($response);
 
     }
 
@@ -171,20 +171,9 @@ class CourseController extends AbstractController
             $response[] = $course->getDataInArray();
         }
         
-        return $response;
+        return new JsonResponse($response);
 
     }
 
-    function validateString($string) {
-        // Utilizamos una expresión regular para verificar que la cadena no contenga símbolos ni puntos
-        $pattern = '/^[a-zA-Z0-9 ]*$/';
-        if (preg_match($pattern, $string)) {
-          // La cadena es válida, no contiene símbolos ni puntos
-          return true;
-        } else {
-          // La cadena es inválida, contiene símbolos o puntos
-          return false;
-        }
-      }
       
 }
