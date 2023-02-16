@@ -38,7 +38,7 @@ class CourseController extends AbstractController
         if ($json != null) {
             $array = json_decode($json, true);
 
-            if (!empty($array['name']) && !empty($array['description']) && !empty($array['price'] && !empty($array['imgPath']) && !empty($array['user']))) {
+            if (!empty($array['name']) && !empty($array['description']) && !empty($array['price'] && !empty($array['user']))) {
                 $user       = $this->userRepository->find($array['user']['id']);
                 $category   = $this->categoryRepository->find($array['category']['id']);
 
