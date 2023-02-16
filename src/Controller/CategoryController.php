@@ -17,34 +17,80 @@ class CategoryController extends AbstractController
     {
     }
 
-    #[Route('/category/get', name: 'get_category', methods: ['POST'])]
+    #[Route('/category/get-by-id/{id}', name: 'category.get_by_id', methods: ['GET'])]
+    public function getCategoryById($id, Request $request)
+    {
+        $category = $this->categoryRepository->find($id);
+
+        return new JsonResponse($category->getDataInArray());
+    }
+
+
+    #[Route('/category/get', name: 'get_category', methods: ['GET'])]
     public function getCategories(): JsonResponse
     {
         $categoriesJson = $this->categoryRepository->findAll();
         $categories = [];
-        $return = [];
 
         foreach ($categoriesJson as $category) {
             $categories[] = $category->getDataInArray();
         }
 
-        if (!empty($categories)) {
-            $return = [
-                'code' => 200,
-                'status' => 'success',
-                'categories' => $categories
-            ];
-        } else {
-            $return = [
-                'code' => 400,
-                'status' => 'error'
-            ];
 
-            $return['messages'][] = 'No hay categorías existentes';
+
+        return new JsonResponse($categories);
+    }
+
+    #[Route('/category/update', name: 'set_category', methods: ['PUT'])]
+    public function setCategory(Request $request): JsonResponse
+    {
+        $json = $request->get('data', null);
+        $data = json_decode($json, true);
+        $return = [];
+
+        if ($data != null) {
+            if (!empty($data['name']) && !empty($data['description']) && !empty($data['id'])) {
+                $category = $this->categoryRepository->find($data['id']);
+
+                if ($category != null) {
+                    $category->setName($data['name']);
+                    $category->setDescription($data['description']);
+                    $this->categoryRepository->save($category, true);
+                    $return = [
+                        'code' => '200',
+                        'status' => 'success',
+                        'category' => $category->getDataInArray(),
+                        'messages' => ['Category updated successfully']
+                    ];
+                }else{
+                    $return = [
+                        'code' => '400',
+                        'status' => 'error',
+                        'messages' => ['Category not found']
+                    ];
+                }
+            } else {
+                $return['code'] = '400';
+                $return['status'] = 'error';
+
+                if (empty($data['id'])) {
+                    $return['messages'][] = "Id not received";
+                }
+
+                if (empty($data['name'])) {
+                    $return['messages'][] = "Name not received";
+                }
+
+                if (empty($data['description'])) {
+                    $return['messages'][] = "Description not received";
+                }
+            }
         }
 
         return new JsonResponse($return);
     }
+
+
 
     #[Route('/category/add', name: 'add_category', methods: ['POST'])]
 
