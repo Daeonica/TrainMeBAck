@@ -27,24 +27,67 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/all-users', name: 'user.alluser', methods: ['GET'])]
-    public function getAllUsers(){
+    public function getAllUsers()
+    {
 
         $users = [];
         $models = $this->userRepository->findAll();
-        foreach($models as $model){
+        foreach ($models as $model) {
             $users[] = $model->getDataInArray();
         }
         return new JsonResponse($users);
     }
 
 
+    #[Route('/user/login', name: 'user.login', methods: ['POST'])]
+    public function login(Request $request)
+    {
 
-    #[Route('/user/get-by-id/{id}', name: 'user.login', methods: ['GET'])]
+        $json = $request->get('data', null);
+        $data = json_decode($json, true);
+        $return = [];
+
+        if ($data != null) {
+            $email = $data['email'];
+            $user = $this->userRepository->findOneBy(['email' => $email]);
+
+            if ($user != null) {
+                $pwd = $data['password'];
+                if (password_verify($pwd, $user->getPassword())) {
+                    $return = [
+                        'code' => '200',
+                        'status' => 'success',
+                        'user'  => $user->getDataInArray()
+                    ];
+                } else {
+                    $return = [
+                        'code' => '400',
+                        'status' => 'error',
+                        'messages' => ['Password incorrect']
+                    ];
+                }
+            } else {
+                $return = [
+                    'code' => '400',
+                    'status' => 'error',
+                    'messages' => ['Data not received']
+                ];
+            }
+        }
+
+        return new JsonResponse($return);
+    }
+
+
+
+
+
+    #[Route('/user/get-by-id/{id}', name: 'user', methods: ['GET'])]
     public function getUserById($id, Request $request): JsonResponse
     {
 
         $user = $this->userRepository->find($id)->getDataInArray();
-        
+
         return new JsonResponse($user);
     }
 
@@ -315,10 +358,10 @@ class UserController extends AbstractController
     public function upload($id, Request $request)
     {
         $user = $this->userRepository->find($id);
-
+        $return = [];
 
         if ($user != null) {
-            $file = $request->files->get('file');
+            $file = $request->files->get('file', null);
             if ($file) {
                 $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                 try {
@@ -326,12 +369,27 @@ class UserController extends AbstractController
                     $user->setImgPath($fileName);
 
                     $this->userRepository->save($user, true);
+                    $return = [
+                        'code' => '200',
+                        'status' => 'success',
+                        'messages' => ['Image saved successfully']
+                    ];
                 } catch (FileException $e) {
-                    dd($e);
+                    $return = [
+                        'code' => '400',
+                        'status' => 'error',
+                        'messages' => ['Image not saved', $e]
+                    ];
                 }
+            }else{
+                $return = [
+                    'code' => '400',
+                    'status' => 'error',
+                    'messages' => ['File not found']
+                ];
             }
         }
-        return new JsonResponse('Imagen subida correctamente');
+        return new JsonResponse($return);
     }
 
     #[Route('/user/image/{id}', name: 'user.getImage', methods: ['GET'])]
