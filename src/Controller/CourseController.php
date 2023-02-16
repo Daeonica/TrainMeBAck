@@ -28,13 +28,15 @@ class CourseController extends AbstractController
        if($json != null) {
             $array = json_decode($json, true);
 
-            if (!empty($array['name']) && !empty($array['description']) && !empty($array['price'] && !empty($array['imgPath']) && !empty($array['user']))){
+            if (!empty($array['name']) && !empty($array['description']) && !empty($array['price'] && !empty($array['imgPath']) && !empty($array['user']) && !empty($array['categories']) && !empty($array['documentRoot']))){
                 $course = new Course();
                 $course->setName($array['name']);
                 $course->setDescription($array['description']);
                 $course->setPrice($array['price']);
                 $course->setImgPath($array['imgPath']);
                 $course->setUser($array['user']);
+                $course->setUser($array['categories']);
+                $course->setUser($array['documentRoot']);
                 $this->courseRepository->save($course,true);
 
                 $return = [
