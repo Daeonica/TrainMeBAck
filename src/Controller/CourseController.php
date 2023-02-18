@@ -56,7 +56,7 @@ class CourseController extends AbstractController
                         'code' => 200,
                         'messages' => ['El curso ha sido creado con éxito']
                     ];
-                }else{
+                } else {
                     if ($user == null) {
                         $return['messages'][] = ['User not exists'];
                     }
@@ -65,9 +65,6 @@ class CourseController extends AbstractController
                         $return['messages'][] = ['Category not exists'];
                     }
                 }
-
-
-                
             } else {
                 $return = [
                     'status' => 'error',

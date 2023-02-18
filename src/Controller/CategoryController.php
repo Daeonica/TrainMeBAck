@@ -113,7 +113,7 @@ class CategoryController extends AbstractController
                     'status' => 'success'
                 ];
             } else {
-                $return['messages'][] = 'El nombre no es válido';
+                $return['messages'][] = 'The name is not valid';
             }
 
             if (!empty($description)) {
@@ -128,10 +128,43 @@ class CategoryController extends AbstractController
                 $this->categoryRepository->save($category, true);
                 $return['category'] = $category->getDataInArray();
             } else {
-                $return['messages'][] = 'El usuario no se ha guardado';
+                $return['messages'][] = 'The category is not saved';
             }
         }
 
+        return new JsonResponse($return);
+    }
+
+    #[Route('/category/delete', name: 'category.delete', methods: ['DELETE'])]
+    public function delete(Request $request): JsonResponse
+    {
+        //recibimos los datos en un json
+        $json = $request->get('data', null);
+        $return = [];
+        if ($json != null) {
+            //transformamos los datos a array
+            $array = json_decode($json, true);
+            $category = $this->categoryRepository->find($array['id']);
+            if ($category != null) {
+                $this->categoryRepository->remove($category, true);
+                $return = [
+                    "code" => '200',
+                    "status" => 'success',
+                ];
+                $return['messages'][] = 'The category has been deleted successfully';
+            } else {
+                $return = [
+                    "code" => '400',
+                    "status" => 'error',
+                ];
+                $return['messages'][] = 'The category not found';
+            }
+        } else {
+            //si los datos recibidos estan vacios
+            $return['code'] = '400';
+            $return['status'] = 'error';
+            $return['messages'][] = 'Data is empty';
+        }
         return new JsonResponse($return);
     }
 }
