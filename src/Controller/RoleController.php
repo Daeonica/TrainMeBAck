@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -127,6 +128,53 @@ class RoleController extends AbstractController
             $return['status'] = 'error';
             $return['messages'][] = 'Data is empty';
         }
+        return new JsonResponse($return);
+    }
+
+    
+    #[Route('/role/add', name: 'add_role', methods: ['POST'])]
+
+    public function setCategories(Request $request): JsonResponse
+    {
+        $json = $request->get('data', null);
+        $return = [];
+
+        if ($json != null) {
+            $array = json_decode($json, true);
+            $name = $array['name'];
+            $key_value = $array['key_value'];
+
+            $role = new Role;
+
+            if (!empty($name)) {
+                $role->setName($name);
+                $return = [
+                    'code' => 200,
+                    'status' => 'success'
+                ];
+            } else {
+                $return['messages'][] = 'The name is not valid';
+            }
+
+            if (!empty($key_value)) {
+                $role->setKeyValue($key_value);
+                $return = [
+                    'code' => 200,
+                    'status' => 'success'
+                ];
+            }else {
+                $return['messages'][] = 'The key_value is not valid';
+            }
+
+            if ($return['code'] == 200) {
+                $this->roleRepository->save($role, true);
+                $return['role'] = $role->getDataInArray();
+                $return['messages'][] = 'Role saved successfully';
+            } else {
+                $return['messages'][] = 'The role is not saved';
+            }
+        }
+
         return new JsonResponse($return);
     }
 

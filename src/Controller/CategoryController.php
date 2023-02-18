@@ -127,6 +127,7 @@ class CategoryController extends AbstractController
             if ($return['code'] == 200) {
                 $this->categoryRepository->save($category, true);
                 $return['category'] = $category->getDataInArray();
+                $return['messages'][] = 'Category saved successfully';
             } else {
                 $return['messages'][] = 'The category is not saved';
             }

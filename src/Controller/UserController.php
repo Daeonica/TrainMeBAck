@@ -237,6 +237,7 @@ class UserController extends AbstractController
                 $return = [
                     "code" => '200',
                     "status" => 'success',
+                    "user"  => $user->getDataInArray()
                 ];
                 $return['messages'][] = 'The user has been deleted successfully';
             } else {
@@ -301,6 +302,15 @@ class UserController extends AbstractController
                     $return["code"] = '200';
                 }
 
+                if (!empty($array['role'])) {
+                    $role = $this->roleRepository->find($array['role']['id']);
+                    if ($role != null) {
+                        $user->setRole($role);
+                    }
+                    $return["status"] = 'success';
+                    $return["code"] = '200';
+                }
+
                 if (!empty($array['email'])) {
                     if ($user->getEmail() != $array['email']) {
                         if ($this->userRepository->findOneBy(['email' => $array['email']]) == null) {
@@ -314,8 +324,10 @@ class UserController extends AbstractController
                             ];
                             $return['messages'][] = 'User with this email exists';
                         }
+                        return new JsonResponse($return);
                     }
                 }
+
 
                 if (!empty($array['password']) && !empty($array['confirmPassword'])) {
                     if ($array['password'] == $array['confirmPassword']) {
@@ -329,6 +341,7 @@ class UserController extends AbstractController
                         ];
                         $return['messages'][] = 'The password confirm is different';
                     }
+                    return new JsonResponse($return);
                 }
 
                 if ($return['code'] == '200') {
@@ -381,7 +394,7 @@ class UserController extends AbstractController
                         'messages' => ['Image not saved', $e]
                     ];
                 }
-            }else{
+            } else {
                 $return = [
                     'code' => '400',
                     'status' => 'error',
