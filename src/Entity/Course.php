@@ -124,6 +124,13 @@ class Course
         return $this;
     }
 
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
 
     public function getCategory(): ?Category
     {

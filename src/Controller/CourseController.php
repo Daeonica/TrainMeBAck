@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,6 +51,7 @@ class CourseController extends AbstractController
                     $course->setImgPath('null');
                     $course->setDocumentRoot('null');
                     $course->setUser($user);
+                    $course->setCategory($category);
                     $this->courseRepository->save($course, true);
                     $return = [
                         'status' => 'success',
@@ -82,7 +84,7 @@ class CourseController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/delete', name: 'course.delete', methods: ['POST'])]
+    #[Route('/course/delete', name: 'course.delete', methods: ['DELETE'])]
     public function deleteCourse(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -117,7 +119,7 @@ class CourseController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/update', name: 'course.update', methods: ['POST'])]
+    #[Route('/course/update', name: 'course.update', methods: ['PUT'])]
     public function updateCourse(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -143,6 +145,19 @@ class CourseController extends AbstractController
                     $course->setPrice($array['price']);
                     $return["status"] = 'success';
                     $return["code"] = '200';
+                }
+
+                if (!empty($array['category'])) {
+                    $category = $this->categoryRepository->find($array['category']['id']);
+                    if ($category) {
+                        $course->setCategory($category);
+                        $return["status"] = 'success';
+                        $return["code"] = '200';
+                    }else{
+                        $return["status"] = 'error';
+                        $return["code"] = '400';
+                        $return['messages'][] = 'Category not found';
+                    }
                 }
 
                 if ($return['code'] == '200') {
@@ -176,7 +191,7 @@ class CourseController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/course/all/{id}', name: 'course.getCoursesUser', methods: ['GET'])]
+    #[Route('/course/trainer/{id}', name: 'course.getCoursesUser', methods: ['GET'])]
     public function getCoursesUser($id, Request $request)
     {
         $user = $this->userRepository->find($id);
