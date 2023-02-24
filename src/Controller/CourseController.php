@@ -59,16 +59,16 @@ class CourseController extends AbstractController
     {
         $all_courses    = [];
         $return         = [];
+        $courses        = $this->courseRepository->findBetween($query);
+        $categories     = $this->categoryRepository->findBy(['name' => $query]);
+        $users          = $this->userRepository->findBetween($query);
 
         // Recogemos y guardamos todo lo que encuentre a través de la tabla cursos:
-        $courses = $this->courseRepository->findBetween($query);
         foreach ($courses as $course) {
             $all_courses[] = $course;
         };
-        $course = null;
 
         // Recogemos y guardamos categorías con el nombre que reciba en la query:
-        $categories = $this->categoryRepository->findBy(['name' => $query]);
         foreach ($categories as $category) {
             // De cada categoría, recorremos sus cursos:
             foreach ($category->getCourses() as $course) {
@@ -94,11 +94,7 @@ class CourseController extends AbstractController
                 }
             }
         };
-        $course = null;
 
-
-
-        $users = $this->userRepository->findBetween($query);
         // Cogemos usuarios que tengan en común con el nombre que recibimos en la query
         foreach ($users as $user) {
             // De cada usuario cogemos array de cursos y la recorremos
@@ -129,9 +125,6 @@ class CourseController extends AbstractController
             unset($data['buy_user_courses']);
             $return[] = $data;
         }
-
-
-
 
         return new JsonResponse($return);
     }
