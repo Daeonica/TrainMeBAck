@@ -19,6 +19,41 @@ class CourseController extends AbstractController
     {
     }
 
+    /**
+     * EXPLICACIÓN PARA DESARROLADORES:
+     * 
+     * He cambiado la estructura de las consultas.
+     * Cuando queremos buscar un curso, suele ser algo jerárquico.
+     * Es decir, tu objetivo es buscar cursos a través de una palabra.
+     * 
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * PRIMER PASO:                                                                                    -------------------------------------------------------------
+     *                                                                                                 -------------------------------------------------------------
+     * Primero buscas si existe un curso en la tabla curso con el nombre, si hay cursos se guardan.    -------------------------------------------------------------
+     *                                                                                                 -------------------------------------------------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * SEGUNDO PASO:                                                                                                                           ---------------------
+     *                                                                                                                                         ---------------------
+     * Después la siguiente tabla a buscar debería ser categoría con el nombre que se recibe a través de la query (también podría ser usuario) ---------------------
+     * y ver cursos de esa categoría. Ahora debemos de validar si en el array principal donde hemos guardados los cursos en el primer paso     --------------------- 
+     * ya está guardado algún curso de los que recibimos a través de las categorías.                                                           ---------------------
+     * Si no lo está, se guardará.                                                                                                             ---------------------
+     *                                                                                                                                         ---------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * TERCER PASO:                                                                                                         ----------------------------------------
+     *                                                                                                                      ----------------------------------------
+     * Lo último nos quedaría por buscar usuarios a través del nombre que se recibe a través de la query,                   ----------------------------------------
+     * se cogen los ussarios y se recorren sus cursos, y volvemos a hacer los mismo,                                        ----------------------------------------
+     * si el curso que se recibe a través del usuario ya esá guardado en el array principal de cursos, no se añadirá.       ----------------------------------------
+     * En caso contrario, lo guardará en el array principal.                                                                ----------------------------------------
+     *                                                                                                                      ----------------------------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * -------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
     #[Route('/course/search/{query}', name: 'course.search', methods: ['POST'])]
     public function search($query)
     {
