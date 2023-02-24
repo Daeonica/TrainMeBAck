@@ -25,7 +25,18 @@ class CourseController extends AbstractController
      * He cambiado la estructura de las consultas.
      * Cuando queremos buscar un curso, suele ser algo jerárquico.
      * Es decir, tu objetivo es buscar cursos a través de una palabra.
-     * 
+     * La idea es buscar primero en la tabla curso, y luego en tablas que tengan relación con la tabla cursos (usuario, categoría).
+     * ········································
+     * ········································
+     * ····                                ····
+     * ····    ADJUNTO EXPLICACIÓN         ····
+     * ····    PASO POR PASO DE LO         ····
+     * ····    QUE SE HA HECHO PARA        ····
+     * ····    QUE LA FUNCIONALIDAD        ····
+     * ····    DE BÚSQUEDA SEA LA ÓPTIMA   ····
+     * ····                                ····
+     * ········································
+     * ········································
      * -------------------------------------------------------------------------------------------------------------------------------------------------------------
      * -------------------------------------------------------------------------------------------------------------------------------------------------------------
      * PRIMER PASO:                                                                                    -------------------------------------------------------------
