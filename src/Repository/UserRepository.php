@@ -21,6 +21,16 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+
+    public function findBetween(string $name)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->where('c.name LIKE :name')
+            ->setParameter('name', '%' . $name . '%');
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function save(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

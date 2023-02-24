@@ -19,8 +19,8 @@ class CourseController extends AbstractController
     {
     }
 
-    #[Route('/course/search/{query}', name: 'course.get-by-id', methods: ['POST'])]
-    function search($query)
+    #[Route('/course/search/{query}', name: 'course.search', methods: ['POST'])]
+    public function search($query)
     {
         $return['courses'] = [];
         $categories = $this->categoryRepository->findBy(['name' => $query]);
@@ -30,7 +30,7 @@ class CourseController extends AbstractController
             $return['courses'] = $category->getCourses();
         };
 
-        $courses = $this->courseRepository->findBy(['name' => '%' . $query . '%']);
+        $courses = $this->courseRepository->findBetween($query);
         foreach ($courses as $course) {
             //recogemos todos los cursos en que el nombre coincide con la query
             foreach ($return['courses'] as $return_course) {
@@ -43,21 +43,32 @@ class CourseController extends AbstractController
         };
 
         //creamos un array con todos los users de la bbdd que tienen el nombre lo de la query
-        $users = $this->userRepository->findBy(['name' => $query]);
+        $users = $this->userRepository->findBetween($query);
         //recorremos los usuarios
         foreach ($users as $user) {
             //miramos los cursos que tienen los users
-            foreach ($user->getCourses() as $userCourse) {
-                //recorremos el array que hemos creado inicialmente con los cursos con categoria igual a la query (si esta vacia pues se acabara llenando)
-                foreach ($return['courses'] as $return_course) {
-                    //hacemos la comparativa de los cursos del user con los del array finakl. Si no coinciden se me meten
-                    if ($userCourse->getId() != $return_course->getId()) {
-                        $return['courses'][] = $userCourse;
+            if (empty($return['courses'])) {
+                foreach ($user->getCourses() as $user_course) {
+                    $data = $user_course->getDataInArray();
+                    unset($data['buy_user_courses']);
+                    unset($data['user']);
+                    unset($data['category']);
+                    $return['courses'][] =  $data;
+                }
+            } else {
+                foreach ($user->getCourses() as $userCourse) {
+
+                    //recorremos el array que hemos creado inicialmente con los cursos con categoria igual a la query.
+                    foreach ($return['courses'] as $return_course) {
+                        //hacemos la comparativa de los cursos del user con los del array finakl. Si no coinciden se me meten
+                        if ($userCourse->getId() != $return_course->getId()) {
+                            $return['courses'][] = $userCourse;
+                        }
                     }
                 }
             }
         }
-        return $return;
+        dd($return);
     }
 
 

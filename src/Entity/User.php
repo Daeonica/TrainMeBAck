@@ -55,6 +55,7 @@ class User
         $this->reviews = new ArrayCollection();
     }
 
+    //
     public function getDataInArray(){
         $array = [
             "id" => $this->id,
