@@ -33,11 +33,19 @@ class CourseController extends AbstractController
         $courses = $this->courseRepository->findBetween($query);
         foreach ($courses as $course) {
             //recogemos todos los cursos en que el nombre coincide con la query
-            foreach ($return['courses'] as $return_course) {
-                //recorremos el array de cursos(categoria) y lo comparamos con el array de cursos(nombre)
-                //si no coinciden, añadimos el curso(nombre) al array final 
-                if ($course->getId() != $return_course->getId()) {
-                    $return['courses'][] = $course;
+            if (empty($return['courses'])) {
+                $data = $course->getDataInArray();
+                unset($data['buy_user_courses']);
+                unset($data['user']);
+                unset($data['category']);
+                $return['courses'][] =  $data;
+            } else {
+                foreach ($return['courses'] as $return_course) {
+                    //recorremos el array de cursos(categoria) y lo comparamos con el array de cursos(nombre)
+                    //si no coinciden, añadimos el curso(nombre) al array final 
+                    if ($course->getId() != $return_course->getId()) {
+                        $return['courses'][] = $course;
+                    }
                 }
             }
         };
