@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Course;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
@@ -21,6 +22,9 @@ class Category
     #[ORM\Column(length: 500)]
     private ?string $description = null;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Course::class)]
+    private Collection $courses;
+
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Publication::class)]
     private Collection $publications;
@@ -28,6 +32,7 @@ class Category
     public function __construct()
     {
         $this->publications = new ArrayCollection();
+        $this->courses = new ArrayCollection();
     }
 
     public function getDataInArray(){
@@ -83,6 +88,14 @@ class Category
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Course>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
     }
 
 

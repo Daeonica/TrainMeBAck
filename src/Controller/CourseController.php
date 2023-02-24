@@ -19,6 +19,48 @@ class CourseController extends AbstractController
     {
     }
 
+    #[Route('/course/search/{query}', name: 'course.get-by-id', methods: ['POST'])]
+    function search($query)
+    {
+        $return['courses'] = [];
+        $categories = $this->categoryRepository->findBy(['name' => $query]);
+
+        foreach ($categories as $category) {
+            //esto es un array de cursos en el que la categoria coincide con lo que pasamos por query
+            $return['courses'] = $category->getCourses();
+        };
+
+        $courses = $this->courseRepository->findBy(['name' => '%' . $query . '%']);
+        foreach ($courses as $course) {
+            //recogemos todos los cursos en que el nombre coincide con la query
+            foreach ($return['courses'] as $return_course) {
+                //recorremos el array de cursos(categoria) y lo comparamos con el array de cursos(nombre)
+                //si no coinciden, añadimos el curso(nombre) al array final 
+                if ($course->getId() != $return_course->getId()) {
+                    $return['courses'][] = $course;
+                }
+            }
+        };
+
+        //creamos un array con todos los users de la bbdd que tienen el nombre lo de la query
+        $users = $this->userRepository->findBy(['name' => $query]);
+        //recorremos los usuarios
+        foreach ($users as $user) {
+            //miramos los cursos que tienen los users
+            foreach ($user->getCourses() as $userCourse) {
+                //recorremos el array que hemos creado inicialmente con los cursos con categoria igual a la query (si esta vacia pues se acabara llenando)
+                foreach ($return['courses'] as $return_course) {
+                    //hacemos la comparativa de los cursos del user con los del array finakl. Si no coinciden se me meten
+                    if ($userCourse->getId() != $return_course->getId()) {
+                        $return['courses'][] = $userCourse;
+                    }
+                }
+            }
+        }
+        return $return;
+    }
+
+
     #[Route('/course/get-by-id/{id}', name: 'course.get-by-id', methods: ['POST'])]
     public function getCourseById($id)
     {
@@ -153,7 +195,7 @@ class CourseController extends AbstractController
                         $course->setCategory($category);
                         $return["status"] = 'success';
                         $return["code"] = '200';
-                    }else{
+                    } else {
                         $return["status"] = 'error';
                         $return["code"] = '400';
                         $return['messages'][] = 'Category not found';
