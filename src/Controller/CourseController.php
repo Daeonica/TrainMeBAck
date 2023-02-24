@@ -76,7 +76,7 @@ class CourseController extends AbstractController
                 }
             }
         }
-        dd($return);
+        return new JsonResponse($return);
     }
 
 
