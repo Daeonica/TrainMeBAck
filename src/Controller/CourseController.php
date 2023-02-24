@@ -155,21 +155,31 @@ class CourseController extends AbstractController
                 $category   = $this->categoryRepository->find($array['category']['id']);
 
                 if ($user != null && $category != null) {
-                    $course = new Course();
-                    $course->setName($array['name']);
-                    $course->setDescription($array['description']);
-                    $course->setPrice($array['price']);
-                    $course->setImgPath('null');
-                    $course->setDocumentRoot('null');
-                    $course->setUser($user);
-                    $course->setCategory($category);
-                    $this->courseRepository->save($course, true);
-                    $return = [
-                        'status' => 'success',
-                        'code' => 200,
-                        'messages' => ['El curso ha sido creado con éxito']
-                    ];
+                    if ($user->getRole()->getKeyValue() == 'trainer') {
+                        $course = new Course();
+                        $course->setName($array['name']);
+                        $course->setDescription($array['description']);
+                        $course->setPrice($array['price']);
+                        $course->setImgPath('null');
+                        $course->setDocumentRoot('null');
+                        $course->setUser($user);
+                        $course->setCategory($category);
+                        $this->courseRepository->save($course, true);
+                        $return = [
+                            'status' => 'success',
+                            'code' => 200,
+                            'messages' => ['Course created successfully']
+                        ];
+                    }else{
+                        $return = [
+                            'status' => 'error',
+                            'code' => 400,
+                            'messages' => ['User not have permission to create course']
+                        ];
+                    }
                 } else {
+                    $return['code'] = '400';
+                    $return['status'] = 'error';
                     if ($user == null) {
                         $return['messages'][] = ['User not exists'];
                     }
@@ -182,14 +192,14 @@ class CourseController extends AbstractController
                 $return = [
                     'status' => 'error',
                     'code' => 400,
-                    'messages' => ['Hay algún campo vacio']
+                    'messages' => ['Data empty']
                 ];
             }
         } else {
             $return = [
                 'status' => 'error',
                 'code' => 400,
-                'messages' => ['json vacío']
+                'messages' => ['Json empty']
             ];
         }
         return new JsonResponse($return);
