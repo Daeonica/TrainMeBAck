@@ -367,55 +367,6 @@ class UserController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/user/upload/{id}', name: 'user.opload', methods: ['POST'])]
-    public function upload($id, Request $request)
-    {
-        $user = $this->userRepository->find($id);
-        $return = [];
-
-        if ($user != null) {
-            $file = $request->files->get('file', null);
-            if ($file) {
-                $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
-                try {
-                    $file->move($this->getParameter('images_directory') . '/user', $fileName);
-                    $user->setImgPath($fileName);
-
-                    $this->userRepository->save($user, true);
-                    $return = [
-                        'code' => '200',
-                        'status' => 'success',
-                        'messages' => ['Image saved successfully']
-                    ];
-                } catch (FileException $e) {
-                    $return = [
-                        'code' => '400',
-                        'status' => 'error',
-                        'messages' => ['Image not saved', $e]
-                    ];
-                }
-            } else {
-                $return = [
-                    'code' => '400',
-                    'status' => 'error',
-                    'messages' => ['File not found']
-                ];
-            }
-        }
-        return new JsonResponse($return);
-    }
-
-    #[Route('/user/image/{id}', name: 'user.getImage', methods: ['GET'])]
-
-    public function getImage($id, Request $request)
-    {
-
-        $user = $this->userRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
-        $response = new BinaryFileResponse($path);
-
-        return $response;
-    }
 
     #[Route('/about_us', name: 'about_us', methods: ['GET'])]
     public function aboutUs()
