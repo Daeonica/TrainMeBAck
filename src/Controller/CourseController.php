@@ -68,7 +68,7 @@ class CourseController extends AbstractController
      * -------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    #[Route('/course/search/{query}', name: 'course.search', methods: ['POST'])]
+    #[Route('/course/search/{query}', name: 'course.search', methods: ['GET'])]
     public function search($query)
     {
         $all_courses    = [];
