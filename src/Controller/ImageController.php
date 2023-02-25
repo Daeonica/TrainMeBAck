@@ -70,7 +70,7 @@ class ImageController extends AbstractController
         return $response;
     }
 
-    #[Route('/course/upload/{id}', name: 'course.opload', methods: ['POST'])]
+    #[Route('/course/upload/image/{id}', name: 'course.upload_image', methods: ['POST'])]
     public function uploadImageCourse($id, Request $request)
     {
         $course = $this->courseRepository->find($id);
@@ -120,7 +120,7 @@ class ImageController extends AbstractController
         return $response;
     }
 
-    #[Route('/course/upload/{id}', name: 'course.opload', methods: ['POST'])]
+    #[Route('/course/upload/document/{id}', name: 'course.upload_document', methods: ['POST'])]
     public function uploadDocumentCourse($id, Request $request)
     {
         $course = $this->courseRepository->find($id);
@@ -164,7 +164,7 @@ class ImageController extends AbstractController
     {
 
         $course = $this->courseRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/course/document' . $course->getDocumentRoot();
+        $path = $this->getParameter('images_directory') . '/course/document/' . $course->getDocumentRoot();
         $response = new BinaryFileResponse($path);
 
         return $response;

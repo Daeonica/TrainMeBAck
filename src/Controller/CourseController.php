@@ -174,8 +174,6 @@ class CourseController extends AbstractController
                         $course->setName($array['name']);
                         $course->setDescription($array['description']);
                         $course->setPrice($array['price']);
-                        $course->setImgPath('null');
-                        $course->setDocumentRoot('null');
                         $course->setUser($user);
                         $course->setCategory($category);
                         $this->courseRepository->save($course, true);
