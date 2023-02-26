@@ -95,4 +95,16 @@ class Review
 
         return $this;
     }
+
+    public function getDataInArray(){
+        $array = [
+            "id"            => $this->id,
+            "user"          => $this->user,
+            "course"        => $this->course,
+            "review_date"   => $this->review_date,
+            "stars"         => $this->stars,
+            "comment"       => $this->comment
+        ];
+        return $array;
+    }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\BuyUserCourse;
 use App\Entity\Category;
+use App\Entity\Review;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,12 +12,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\CourseRepository;
 use App\Entity\Course;
+use App\Repository\BuyUserCourseRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\UserRepository;
 
 class CourseController extends AbstractController
 {
-    public function __construct(private CategoryRepository $categoryRepository, private CourseRepository $courseRepository, private UserRepository $userRepository)
+    public function __construct(private CategoryRepository $categoryRepository, private ReviewRepository $reviewRepository, private BuyUserCourseRepository $buyUserCourseRepository, private CourseRepository $courseRepository, private UserRepository $userRepository)
     {
     }
 
@@ -152,6 +156,96 @@ class CourseController extends AbstractController
         return new JsonResponse($course);
     }
 
+    #[Route('/course/reviews/{id}', name: 'course.create', methods: ['POST'])]
+    public function courseReviews($id, Request $request): JsonResponse
+    {
+        $reviews = [];
+
+        foreach ($this->courseRepository->find($id)->getReviews() as $review) {
+            $reviews[] = $review->getDataInArray();
+        }
+
+        return new JsonResponse($reviews);
+    }
+
+    #[Route('/course/create/review/{user_id}/{course_id}', name: 'course.create', methods: ['POST'])]
+    public function createReview($user_id, $course_id, Request $request): JsonResponse
+    {
+
+        $json           = $request->get('data', null);
+        $array          = json_decode($json, true);
+
+        if ($json) {
+            $course         = $this->courseRepository->find($course_id);
+            $user           = $this->courseRepository->find($user_id);
+            $purchases      = $this->buyUserCourseRepository->findAll();
+            $purchased      = false;
+
+            foreach ($purchases as $purchase) {
+                if ($purchase->getCourse()->getId() == $course_id && $purchase->getUser()->getId() == $user_id) {
+                    $purchased = true;
+                    break;
+                }
+            }
+
+            if ($purchased) {
+                $stars = $array['stars'];
+                $comment = $array['comment'];
+                if (!empty($array['stars']) && !empty($array['comment'])) {
+                    $review = new Review();
+                    $review->setComment($comment);
+                    $review->setStars($stars);
+                    $review->setUser($user);
+                    $review->setCourse($course);
+                    $this->reviewRepository->save($review);
+                    $return = [
+                        'status' => 'success',
+                        'code' => 200,
+                        'messages' => ['Review created successfully']
+                    ];
+                } else {
+                    $return = [
+                        'status' => 'error',
+                        'code' => 400,
+                        'messages' => ['Stars and comment is empty']
+                    ];
+                }
+            }else{
+                $return = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'messages' => ['Have to buy this course for upload your review']
+                ];
+            }
+        }else{
+            $return = [
+                'status' => 'error',
+                'code' => 400,
+                'messages' => ['Data not received']
+            ];
+        }
+
+
+
+        return new JsonResponse($return);
+    }
+
+
+    #[Route('/course/review/delete/{id}', name: 'course.create', methods: ['DELETE'])]
+    public function deleteReview($id, Request $request): JsonResponse
+    {
+        $this->reviewRepository->remove($this->reviewRepository->find($id));
+        $return = [
+            'status' => 'success',
+            'code' => 200,
+            'messages' => ['Review deleted successfully']
+        ];
+        return new JsonResponse($return);
+    }
+
+    
+
+
 
 
 
@@ -182,7 +276,7 @@ class CourseController extends AbstractController
                             'code' => 200,
                             'messages' => ['Course created successfully']
                         ];
-                    }else{
+                    } else {
                         $return = [
                             'status' => 'error',
                             'code' => 400,
