@@ -1,0 +1,152 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Category;
+use App\Entity\Role;
+use App\Entity\User;
+use App\Repository\CategoryRepository;
+use App\Repository\RoleRepository;
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class TestController extends AbstractController
+{
+
+    public function __construct(private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
+    {
+    }
+
+    /**
+     * Endpoint para crear datos de testeo de aplicación.
+     * 
+     * F
+     */
+
+    #[Route('/test-data', methods: ['POST'])]
+    public function addTestingData()
+    {
+        $admin      = $this->roleRepository->findOneBy(['key_value' => 'admin']);
+        $trainer    = $this->roleRepository->findOneBy(['key_value' => 'trainer']);
+        $customer   = $this->roleRepository->findOneBy(['key_value' => 'customer']);
+        $return     = [];
+
+        if (!$admin) {
+            $admin = new Role;
+            $admin->setName('admin');
+            $admin->setKeyValue('admin');
+            $this->roleRepository->save($admin, true);
+            $return['messages']['roles'][] = 'Admin role created';
+        } else {
+            $return['messages']['roles'][] = 'Admin role already exists';
+        }
+
+        if (!$trainer) {
+            $trainer = new Role;
+            $trainer->setName('trainer');
+            $trainer->setKeyValue('trainer');
+            $this->roleRepository->save($trainer, true);
+            $return['messages']['roles'][] = 'Trainer role created';
+        } else {
+            $return['messages']['roles'][] = 'Trainer role already exists';
+        }
+
+        if (!$customer) {
+            $customer = new Role;
+            $customer->setName('customer');
+            $customer->setKeyValue('customer');
+            $this->roleRepository->save($customer, true);
+            $return['messages']['roles'][] = 'Customer role created';
+        } else {
+            $return['messages']['roles'][] = 'Customer role already exists';
+        }
+
+        $adminUser   = $this->userRepository->findOneBy(['email' => 'admin@user.com']);
+        $trainerUser    = $this->userRepository->findOneBy(['email' => 'trainer@user.com']);
+        $customerUser   = $this->userRepository->findOneBy(['email' => 'customer@user.com']);
+
+        $password = password_hash('admin123', PASSWORD_BCRYPT);
+
+
+        if (!$customerUser) {
+            $customerUser = new User;
+            $customerUser->setName('customer');
+            $customerUser->setSurname('customer');
+            $customerUser->setDescription('customer');
+            $customerUser->setEmail('customer@user.com');
+            $customerUser->setPassword($password);
+            $customerUser->setRole($customer);
+            $this->userRepository->save($customerUser, true);
+            $return['messages']['users'][] = 'Customer user created';
+        } else {
+            $return['messages']['users'][] = 'Customer user already exists';
+        }
+
+        if (!$adminUser) {
+            $adminUser = new User;
+            $adminUser->setName('admin');
+            $adminUser->setSurname('admin');
+            $adminUser->setDescription('admin');
+            $adminUser->setEmail('admin@user.com');
+            $adminUser->setPassword($password);
+            $adminUser->setRole($admin);
+            $this->userRepository->save($adminUser, true);
+            $return['messages']['users'][] = 'Admin user created';
+        } else {
+            $return['messages']['users'][] = 'Admin user already exists';
+        }
+
+        if (!$trainerUser) {
+            $trainerUser = new User;
+            $trainerUser->setName('trainer');
+            $trainerUser->setSurname('trainer');
+            $trainerUser->setDescription('trainer');
+            $trainerUser->setEmail('trainer@user.com');
+            $trainerUser->setPassword($password);
+            $trainerUser->setRole($trainer);
+            $this->userRepository->save($trainerUser, true);
+            $return['messages']['users'][] = 'Trainer user created';
+        } else {
+            $return['messages']['users'][] = 'Trainer user already exists';
+        }
+
+
+        $nutritionCategory      = $this->categoryRepository->findOneBy(['name' => 'nutrition']);
+        $crossFitCategory       = $this->categoryRepository->findOneBy(['name' => 'crossfit']);
+        $powerliftingCategory   = $this->categoryRepository->findOneBy(['name' => 'powerlifting']);
+
+        if (!$nutritionCategory) {
+            $nutritionCategory = new Category;
+            $nutritionCategory->setName('customer');
+            $nutritionCategory->setDescription('customer');
+            $this->categoryRepository->save($nutritionCategory, true);
+            $return['messages']['categories'][] = 'Nutrition category created';
+        } else {
+            $return['messages']['categories'][] = 'Nutrition category already exists';
+        }
+
+        if (!$crossFitCategory) {
+            $crossFitCategory = new Category;
+            $crossFitCategory->setName('crossfit');
+            $crossFitCategory->setDescription('crossfit');
+            $this->categoryRepository->save($crossFitCategory, true);
+            $return['messages']['categories'][] = 'Crossfit category created';
+        } else {
+            $return['messages']['categories'][] = 'Crossfit category already exists';
+        }
+
+        if (!$powerliftingCategory) {
+            $powerliftingCategory = new Category;
+            $powerliftingCategory->setName('powerlifting');
+            $powerliftingCategory->setDescription('powerlifting');
+            $this->categoryRepository->save($powerliftingCategory, true);
+            $return['messages']['categories'][] = 'Powerlifitng category created';
+        } else {
+            $return['messages']['categories'][] = 'Powerlifitng category already exists';
+        }
+
+        return $return;
+    }
+}
