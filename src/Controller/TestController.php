@@ -9,6 +9,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -78,6 +79,8 @@ class TestController extends AbstractController
             $customerUser->setEmail('customer@user.com');
             $customerUser->setPassword($password);
             $customerUser->setRole($customer);
+            $customerUser->setRegisterDate(new \DateTime);
+
             $this->userRepository->save($customerUser, true);
             $return['messages']['users'][] = 'Customer user created';
         } else {
@@ -92,6 +95,7 @@ class TestController extends AbstractController
             $adminUser->setEmail('admin@user.com');
             $adminUser->setPassword($password);
             $adminUser->setRole($admin);
+            $adminUser->setRegisterDate(new \DateTime);
             $this->userRepository->save($adminUser, true);
             $return['messages']['users'][] = 'Admin user created';
         } else {
@@ -106,6 +110,8 @@ class TestController extends AbstractController
             $trainerUser->setEmail('trainer@user.com');
             $trainerUser->setPassword($password);
             $trainerUser->setRole($trainer);
+            $trainerUser->setPassword($password);
+            $trainerUser->setRegisterDate(new \DateTime);
             $this->userRepository->save($trainerUser, true);
             $return['messages']['users'][] = 'Trainer user created';
         } else {
@@ -147,6 +153,6 @@ class TestController extends AbstractController
             $return['messages']['categories'][] = 'Powerlifitng category already exists';
         }
 
-        return $return;
+        return new JsonResponse($return);
     }
 }
