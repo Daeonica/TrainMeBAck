@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Course;
 use App\Entity\Category;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use App\Repository\CourseRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestController extends AbstractController
 {
 
-    public function __construct(private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
+    public function __construct(private CourseRepository $courseRepository, private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
     {
     }
 
@@ -151,6 +153,50 @@ class TestController extends AbstractController
             $return['messages']['categories'][] = 'Powerlifitng category created';
         } else {
             $return['messages']['categories'][] = 'Powerlifitng category already exists';
+        }
+
+        $nutritionCourse        = $this->courseRepository->findOneBy(['name' => 'nutrition']);
+        $crossFitCourse         = $this->courseRepository->findOneBy(['name' => 'crossfit']);
+        $powerliftingCourse     = $this->courseRepository->findOneBy(['name' => 'powerlifting']);
+
+
+        if (!$nutritionCourse) {
+            $nutritionCourse = new Course;
+            $nutritionCourse->setName('customer');
+            $nutritionCourse->setDescription('customer');
+            $nutritionCourse->setPrice(45);
+            $nutritionCourse->setUser($trainerUser);
+            $nutritionCourse->setCategory($nutritionCategory);
+            $this->courseRepository->save($nutritionCourse, true);
+            $return['messages']['courses'][] = 'Nutrition course created';
+        } else {
+            $return['messages']['courses'][] = 'Nutrition course already exists';
+        }
+
+        if (!$crossFitCourse) {
+            $crossFitCourse = new Course;
+            $crossFitCourse->setName('crossfit');
+            $crossFitCourse->setDescription('crossfit');
+            $crossFitCourse->setPrice(45);
+            $crossFitCourse->setUser($trainerUser);
+            $crossFitCourse->setCategory($crossFitCategory);
+            $this->courseRepository->save($crossFitCourse, true);
+            $return['messages']['courses'][] = 'Crossfit course created';
+        } else {
+            $return['messages']['courses'][] = 'Crossfit course already exists';
+        }
+
+        if (!$powerliftingCourse) {
+            $powerliftingCourse = new Course;
+            $powerliftingCourse->setName('powerlifting');
+            $powerliftingCourse->setDescription('powerlifting');
+            $powerliftingCourse->setPrice(45);
+            $powerliftingCourse->setUser($trainerUser);
+            $powerliftingCourse->setCategory($powerliftingCategory);
+            $this->courseRepository->save($powerliftingCourse, true);
+            $return['messages']['courses'][] = 'Powerlifitng course created';
+        } else {
+            $return['messages']['courses'][] = 'Powerlifitng course already exists';
         }
 
         return new JsonResponse($return);
