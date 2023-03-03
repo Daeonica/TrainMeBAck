@@ -431,4 +431,29 @@ class CourseController extends AbstractController
 
         return new JsonResponse($response);
     }
+
+    #[Route('/purchased-courses/{id}', name: 'course.getCoursesUser', methods: ['GET'])]
+    public function getPurchasedCourses($id, Request $request){
+        $purchasedCourses = $this->buyUserCourseRepository->findBy(['user_id' => $id]);
+        $courses = [];
+        foreach ($purchasedCourses as $purchasedCourse) {
+            $courses[] = $purchasedCourse->getCourse()->getDataInArray();
+        }
+
+
+        return new JsonResponse($courses);
+    }
+
+    #[Route('/is-purchased/{user_id}/{course_id}', name: 'course.getCoursesUser', methods: ['GET'])]
+    public function isPurchasedByUser($user_id,$course_id, Request $request){
+        $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user_id' => $user_id, 'course_id' => $course_id]);
+        
+        if ($purchasedCourses) {
+            return new JsonResponse(true);
+        }
+
+
+        return new JsonResponse(false);
+    }
+
 }
