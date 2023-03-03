@@ -210,14 +210,14 @@ class CourseController extends AbstractController
                         'messages' => ['Stars and comment is empty']
                     ];
                 }
-            }else{
+            } else {
                 $return = [
                     'status' => 'error',
                     'code' => 400,
                     'messages' => ['Have to buy this course for upload your review']
                 ];
             }
-        }else{
+        } else {
             $return = [
                 'status' => 'error',
                 'code' => 400,
@@ -243,7 +243,7 @@ class CourseController extends AbstractController
         return new JsonResponse($return);
     }
 
-    
+
 
 
 
@@ -433,7 +433,8 @@ class CourseController extends AbstractController
     }
 
     #[Route('/purchased-courses/{id}', name: 'course.getCoursesUser', methods: ['GET'])]
-    public function getPurchasedCourses($id, Request $request){
+    public function getPurchasedCourses($id, Request $request)
+    {
         $purchasedCourses = $this->buyUserCourseRepository->findBy(['user_id' => $id]);
         $courses = [];
         foreach ($purchasedCourses as $purchasedCourse) {
@@ -445,9 +446,10 @@ class CourseController extends AbstractController
     }
 
     #[Route('/is-purchased/{user_id}/{course_id}', name: 'course.getCoursesUser', methods: ['GET'])]
-    public function isPurchasedByUser($user_id,$course_id, Request $request){
+    public function isPurchasedByUser($user_id, $course_id, Request $request = null)
+    {
         $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user_id' => $user_id, 'course_id' => $course_id]);
-        
+
         if ($purchasedCourses) {
             return new JsonResponse(true);
         }
@@ -456,4 +458,40 @@ class CourseController extends AbstractController
         return new JsonResponse(false);
     }
 
+    #[Route('/buy/{user_id}/{course_id}', name: 'course.getCoursesUser', methods: ['POST'])]
+    public function buyCourse($user_id, $course_id, Request $request)
+    {
+
+        $user = $this->userRepository->find($user_id);
+        $course = $this->courseRepository->find($course_id);
+        $return = [];
+
+        if ($user && $course) {
+            if (!$this->isPurchasedByUser($user_id, $course_id)) {
+                $purchase = new BuyUserCourse();
+                $purchase->setCourse($course);
+                $purchase->setUser($user);
+                $purchase->getTransactionDate(new \DateTime);
+                $this->buyUserCourseRepository->save($purchase, true);
+                $return['code'] = '200';
+                $return['status'] = 'success';
+                $return['messages'][] = 'Course purchased successfully';
+            } else {
+                $return['code'] = '400';
+                $return['status'] = 'error';
+                $return['messages'][] = 'Course is already purchased';
+            }
+        } else {
+            $return['code'] = '400';
+            $return['status'] = 'error';
+            if (!$user) {
+                $return['messages'][] = 'User not found';
+            }
+            if (!$course) {
+                $return['messages'][] = 'Course not found';
+            }
+        }
+
+        return new JsonResponse($return);
+    }
 }
