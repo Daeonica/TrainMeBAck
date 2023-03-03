@@ -466,8 +466,14 @@ class CourseController extends AbstractController
         $course = $this->courseRepository->find($course_id);
         $return = [];
 
+        return $this->isPurchasedByUser($user_id, $course_id);
+
         if ($user && $course) {
-            if (!$this->isPurchasedByUser($user_id, $course_id)) {
+
+
+            $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user_id' => $user_id, 'course_id' => $course_id]);
+
+            if ($purchasedCourses) {
                 $purchase = new BuyUserCourse();
                 $purchase->setCourse($course);
                 $purchase->setUser($user);
@@ -476,7 +482,7 @@ class CourseController extends AbstractController
                 $return['code'] = '200';
                 $return['status'] = 'success';
                 $return['messages'][] = 'Course purchased successfully';
-            } else {
+            }else{
                 $return['code'] = '400';
                 $return['status'] = 'error';
                 $return['messages'][] = 'Course is already purchased';
