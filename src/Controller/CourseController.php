@@ -471,7 +471,7 @@ class CourseController extends AbstractController
                 $purchase = new BuyUserCourse();
                 $purchase->setCourse($course);
                 $purchase->setUser($user);
-                $purchase->getTransactionDate(new \DateTime);
+                $purchase->setTransactionDate(new \DateTime);
                 $this->buyUserCourseRepository->save($purchase, true);
                 $return['code'] = '200';
                 $return['status'] = 'success';
