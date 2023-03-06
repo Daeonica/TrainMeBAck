@@ -127,8 +127,8 @@ class TestController extends AbstractController
 
         if (!$nutritionCategory) {
             $nutritionCategory = new Category;
-            $nutritionCategory->setName('customer');
-            $nutritionCategory->setDescription('customer');
+            $nutritionCategory->setName('nutrition');
+            $nutritionCategory->setDescription('nutrition');
             $this->categoryRepository->save($nutritionCategory, true);
             $return['messages']['categories'][] = 'Nutrition category created';
         } else {
@@ -162,8 +162,8 @@ class TestController extends AbstractController
 
         if (!$nutritionCourse) {
             $nutritionCourse = new Course;
-            $nutritionCourse->setName('customer');
-            $nutritionCourse->setDescription('customer');
+            $nutritionCourse->setName('nutrition');
+            $nutritionCourse->setDescription('nutrition');
             $nutritionCourse->setPrice(45);
             $nutritionCourse->setUser($trainerUser);
             $nutritionCourse->setCategory($nutritionCategory);
