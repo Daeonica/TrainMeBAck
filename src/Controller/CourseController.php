@@ -448,7 +448,7 @@ class CourseController extends AbstractController
     #[Route('/is-purchased/{user_id}/{course_id}', name: 'course.getCoursesUser', methods: ['GET'])]
     public function isPurchasedByUser($user_id, $course_id, Request $request = null)
     {
-        $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user_id' => $user_id, 'course_id' => $course_id]);
+        $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user' => $user_id, 'course' => $course_id]);
 
         if ($purchasedCourses) {
             return new JsonResponse(true);
@@ -458,7 +458,7 @@ class CourseController extends AbstractController
         return new JsonResponse(false);
     }
 
-    #[Route('/buy/{user_id}/{course_id}', name: 'course.getCoursesUser', methods: ['POST'])]
+    #[Route('/buy/{user_id}/{course_id}', methods: ['POST'])]
     public function buyCourse($user_id, $course_id, Request $request)
     {
 
@@ -466,14 +466,11 @@ class CourseController extends AbstractController
         $course = $this->courseRepository->find($course_id);
         $return = [];
 
-        return $this->isPurchasedByUser($user_id, $course_id);
 
         if ($user && $course) {
+            $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user' => $user_id, 'course' => $course_id]);
 
-
-            $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user_id' => $user_id, 'course_id' => $course_id]);
-
-            if ($purchasedCourses) {
+            if (!$purchasedCourses) {
                 $purchase = new BuyUserCourse();
                 $purchase->setCourse($course);
                 $purchase->setUser($user);
