@@ -22,12 +22,12 @@ class ReviewController extends AbstractController
     {
     }
 
-    #[Route('/course/reviews/{id}', methods: ['POST'])]
+    #[Route('/course/reviews/{id}', methods: ['GET'])]
     public function courseReviews($id, Request $request): JsonResponse
     {
         $reviews = [];
 
-        foreach ($this->courseRepository->find($id)->getReviews() as $review) {
+        foreach ($this->reviewRepository->findBy(['course' => $id]) as $review) {
             $reviews[] = $review->getDataInArray();
         }
 
@@ -47,25 +47,25 @@ class ReviewController extends AbstractController
             if ($course && $user) {
                 $purchased     = $this->buyUserCourseRepository->findOneBy(['user' => $user->getId(), 'course' => $course->getId()]);
                 if ($purchased) {
-                    $stars = $array['stars'];
                     $comment = $array['comment'];
-                    if (!empty($array['stars']) && !empty($array['comment'])) {
-                        $review = new Review();
+                    if (!empty($array['comment'])) {
+                        $review = new Review;
                         $review->setComment($comment);
-                        $review->setStars($stars);
                         $review->setUser($user);
                         $review->setCourse($course);
-                        $this->reviewRepository->save($review);
+                        $review->setReviewDate(new \DateTime);
+                        $this->reviewRepository->save($review, true);
                         $return = [
                             'status' => 'success',
                             'code' => 200,
-                            'messages' => ['Review created successfully']
+                            'messages' => ['Review created successfully'],
+                            'review' => $review->getDataInArray()
                         ];
                     } else {
                         $return = [
                             'status' => 'error',
                             'code' => 400,
-                            'messages' => ['Stars and comment is empty']
+                            'messages' => ['Comment is empty']
                         ];
                     }
                 } else {
@@ -105,7 +105,7 @@ class ReviewController extends AbstractController
     #[Route('/course/review/delete/{id}', name: 'course.create', methods: ['DELETE'])]
     public function deleteReview($id, Request $request): JsonResponse
     {
-        $this->reviewRepository->remove($this->reviewRepository->find($id));
+        $this->reviewRepository->remove($this->reviewRepository->find($id),true);
         $return = [
             'status' => 'success',
             'code' => 200,

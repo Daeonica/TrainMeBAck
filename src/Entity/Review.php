@@ -17,9 +17,6 @@ class Review
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $comment = null;
 
-    #[ORM\Column]
-    private ?int $stars = null;
-
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Course $course = null;
@@ -44,18 +41,6 @@ class Review
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
-
-        return $this;
-    }
-
-    public function getStars(): ?int
-    {
-        return $this->stars;
-    }
-
-    public function setStars(int $stars): self
-    {
-        $this->stars = $stars;
 
         return $this;
     }
@@ -99,10 +84,9 @@ class Review
     public function getDataInArray(){
         $array = [
             "id"            => $this->id,
-            "user"          => $this->user,
-            "course"        => $this->course,
+            "user"          => $this->user->getDataInArray(),
+            "course"        => $this->course->getDataInArray(),
             "review_date"   => $this->review_date,
-            "stars"         => $this->stars,
             "comment"       => $this->comment
         ];
         return $array;
