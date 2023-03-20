@@ -23,7 +23,7 @@ class RoleController extends AbstractController
 
 
 
-    #[Route('/roles/get', name: '', methods: ['GET'])]
+    #[Route('/roles/get', methods: ['GET'])]
     public function getRoles():JsonResponse{
         
         $rolesJson = $this->roleRepository->findAll();
@@ -39,7 +39,7 @@ class RoleController extends AbstractController
         return new JsonResponse($roles); 
     }
 
-    #[Route('/role/get-by-id/{id}', name: 'role.get_by_id', methods: ['GET'])]
+    #[Route('/role/get-by-id/{id}', methods: ['GET'])]
     public function getRoleById($id)
     {
         $role = $this->roleRepository->find($id);
@@ -48,7 +48,7 @@ class RoleController extends AbstractController
     }
 
 
-    #[Route('/role/update', name: 'set_role', methods: ['PUT'])]
+    #[Route('/role/update', methods: ['PUT'])]
     public function setCategory(Request $request): JsonResponse
     {
         $json = $request->get('data');
@@ -98,7 +98,7 @@ class RoleController extends AbstractController
     }
 
 
-    #[Route('/role/delete', name: 'role.delete', methods: ['DELETE'])]
+    #[Route('/role/delete', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
         //recibimos los datos en un json
@@ -132,7 +132,7 @@ class RoleController extends AbstractController
     }
 
     
-    #[Route('/role/add', name: 'add_role', methods: ['POST'])]
+    #[Route('/role/add', methods: ['POST'])]
 
     public function setCategories(Request $request): JsonResponse
     {

@@ -17,7 +17,7 @@ class CategoryController extends AbstractController
     {
     }
 
-    #[Route('/category/get-by-id/{id}', name: 'category.get_by_id', methods: ['GET'])]
+    #[Route('/category/get-by-id/{id}', methods: ['GET'])]
     public function getCategoryById($id, Request $request)
     {
         $category = $this->categoryRepository->find($id);
@@ -26,7 +26,7 @@ class CategoryController extends AbstractController
     }
 
 
-    #[Route('/category/get', name: 'get_category', methods: ['GET'])]
+    #[Route('/category/get', methods: ['GET'])]
     public function getCategories(): JsonResponse
     {
         $categoriesJson = $this->categoryRepository->findAll();
@@ -41,7 +41,7 @@ class CategoryController extends AbstractController
         return new JsonResponse($categories);
     }
 
-    #[Route('/category/update', name: 'set_category', methods: ['PUT'])]
+    #[Route('/category/update', methods: ['PUT'])]
     public function setCategory(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -92,7 +92,7 @@ class CategoryController extends AbstractController
 
 
 
-    #[Route('/category/add', name: 'add_category', methods: ['POST'])]
+    #[Route('/category/add', methods: ['POST'])]
 
     public function setCategories(Request $request): JsonResponse
     {
@@ -136,7 +136,7 @@ class CategoryController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/category/delete', name: 'category.delete', methods: ['DELETE'])]
+    #[Route('/category/delete', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
         //recibimos los datos en un json

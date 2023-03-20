@@ -26,7 +26,7 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route('/user/all-users', name: 'user.alluser', methods: ['GET'])]
+    #[Route('/user/all-users', methods: ['GET'])]
     public function getAllUsers()
     {
 
@@ -39,7 +39,7 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/user/login', name: 'user.login', methods: ['POST'])]
+    #[Route('/user/login', methods: ['POST'])]
     public function login(Request $request)
     {
 
@@ -82,7 +82,7 @@ class UserController extends AbstractController
 
 
 
-    #[Route('/user/get-by-id/{id}', name: 'user', methods: ['GET'])]
+    #[Route('/user/get-by-id/{id}', methods: ['GET'])]
     public function getUserById($id, Request $request): JsonResponse
     {
 
@@ -92,7 +92,7 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/user/register', name: 'user.register', methods: ['POST'])]
+    #[Route('/user/register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
     {
         // Getting all data by Request with 'data' access key, if access key not exists then $json have null value
@@ -222,7 +222,7 @@ class UserController extends AbstractController
         return false;
     }
 
-    #[Route('/user/delete', name: 'user.delete', methods: ['DELETE'])]
+    #[Route('/user/delete', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
         //recibimos los datos en un json
@@ -256,7 +256,7 @@ class UserController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/user/update', name: 'user.update', methods: ['PUT'])]
+    #[Route('/user/update', methods: ['PUT'])]
     public function update(Request $request): JsonResponse
     {
 
@@ -363,12 +363,11 @@ class UserController extends AbstractController
             ];
             $return['messages'][] = 'Data not found';
         }
-
         return new JsonResponse($return);
     }
 
 
-    #[Route('/about_us', name: 'about_us', methods: ['GET'])]
+    #[Route('/about_us', methods: ['GET'])]
     public function aboutUs()
     {
         $role = $this->roleRepository->findOneBy(['key_value' => 'admin']);
@@ -380,7 +379,7 @@ class UserController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/contact', name: 'contact', methods: ['POST'])]
+    #[Route('/contact', methods: ['POST'])]
     public function contact(Request $request)
     {
         $json = $request->get('data', null);

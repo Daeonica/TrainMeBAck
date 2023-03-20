@@ -20,7 +20,7 @@ class ImageController extends AbstractController
 
     }
 
-    #[Route('/user/upload/{id}', name: 'user.opload', methods: ['POST'])]
+    #[Route('/user/upload/{id}', methods: ['POST'])]
     public function uploadImageUser($id, Request $request)
     {
         $user = $this->userRepository->find($id);
@@ -58,7 +58,7 @@ class ImageController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/user/image/{id}', name: 'user.getImage', methods: ['GET'])]
+    #[Route('/user/image/{id}', methods: ['GET'])]
 
     public function getUserImage($id, Request $request)
     {
@@ -70,7 +70,7 @@ class ImageController extends AbstractController
         return $response;
     }
 
-    #[Route('/course/upload/image/{id}', name: 'course.upload_image', methods: ['POST'])]
+    #[Route('/course/upload/image/{id}', methods: ['POST'])]
     public function uploadImageCourse($id, Request $request)
     {
         $course = $this->courseRepository->find($id);
@@ -108,7 +108,7 @@ class ImageController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/image/{id}', name: 'course.getImage', methods: ['GET'])]
+    #[Route('/course/image/{id}', methods: ['GET'])]
 
     public function getCourseImage($id, Request $request)
     {
@@ -120,7 +120,7 @@ class ImageController extends AbstractController
         return $response;
     }
 
-    #[Route('/course/upload/document/{id}', name: 'course.upload_document', methods: ['POST'])]
+    #[Route('/course/upload/document/{id}', methods: ['POST'])]
     public function uploadDocumentCourse($id, Request $request)
     {
         $course = $this->courseRepository->find($id);
@@ -158,7 +158,7 @@ class ImageController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/document/{id}', name: 'course.getDocument', methods: ['GET'])]
+    #[Route('/course/document/{id}', methods: ['GET'])]
 
     public function getCourseDocument($id)
     {

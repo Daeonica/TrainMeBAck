@@ -102,7 +102,7 @@ class ReviewController extends AbstractController
     }
 
 
-    #[Route('/course/review/delete/{id}', name: 'course.create', methods: ['DELETE'])]
+    #[Route('/course/review/delete/{id}', methods: ['DELETE'])]
     public function deleteReview($id, Request $request): JsonResponse
     {
         $this->reviewRepository->remove($this->reviewRepository->find($id),true);

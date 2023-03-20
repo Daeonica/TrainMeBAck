@@ -72,7 +72,7 @@ class CourseController extends AbstractController
      * -------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    #[Route('/course/search/{query}', name: 'course.search', methods: ['GET'])]
+    #[Route('/course/search/{query}', methods: ['GET'])]
     public function search($query)
     {
         $all_courses    = [];
@@ -148,7 +148,7 @@ class CourseController extends AbstractController
     }
 
 
-    #[Route('/course/get-by-id/{id}', name: 'course.get-by-id', methods: ['POST'])]
+    #[Route('/course/get-by-id/{id}', methods: ['POST'])]
     public function getCourseById($id)
     {
         $course = $this->courseRepository->find($id)->getDataInArray();
@@ -156,7 +156,7 @@ class CourseController extends AbstractController
         return new JsonResponse($course);
     }
 
-    #[Route('/course/create', name: 'course.create', methods: ['POST'])]
+    #[Route('/course/create', methods: ['POST'])]
     public function createCourse(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -218,7 +218,7 @@ class CourseController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/delete', name: 'course.delete', methods: ['DELETE'])]
+    #[Route('/course/delete', methods: ['DELETE'])]
     public function deleteCourse(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -253,7 +253,7 @@ class CourseController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/update', name: 'course.update', methods: ['PUT'])]
+    #[Route('/course/update', methods: ['PUT'])]
     public function updateCourse(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
@@ -313,7 +313,7 @@ class CourseController extends AbstractController
         return new JsonResponse($return);
     }
 
-    #[Route('/course/get', name: 'course.getCourses', methods: ['GET'])]
+    #[Route('/course/get', methods: ['GET'])]
     public function getCourses(Request $request)
     {
         $response = [];
@@ -325,7 +325,7 @@ class CourseController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/course/trainer/{id}', name: 'course.getCoursesUser', methods: ['GET'])]
+    #[Route('/course/trainer/{id}', methods: ['GET'])]
     public function getCoursesUser($id, Request $request)
     {
         $user = $this->userRepository->find($id);
@@ -339,7 +339,7 @@ class CourseController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/purchased-courses/{id}', name: 'course.getCoursesUser', methods: ['GET'])]
+    #[Route('/purchased-courses/{id}', methods: ['GET'])]
     public function getPurchasedCourses($id, Request $request)
     {
         $purchasedCourses = $this->buyUserCourseRepository->findBy(['user_id' => $id]);
@@ -352,7 +352,7 @@ class CourseController extends AbstractController
         return new JsonResponse($courses);
     }
 
-    #[Route('/is-purchased/{user_id}/{course_id}', name: 'course.getCoursesUser', methods: ['GET'])]
+    #[Route('/is-purchased/{user_id}/{course_id}', methods: ['GET'])]
     public function isPurchasedByUser($user_id, $course_id, Request $request = null)
     {
         $purchasedCourses = $this->buyUserCourseRepository->findOneBy(['user' => $user_id, 'course' => $course_id]);
