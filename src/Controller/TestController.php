@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Course;
 use App\Entity\Category;
+use App\Entity\Review;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestController extends AbstractController
 {
 
-    public function __construct(private CourseRepository $courseRepository, private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
+    public function __construct(private ReviewRepository $reviewRepository, private CourseRepository $courseRepository, private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
     {
     }
 
@@ -172,6 +174,22 @@ class TestController extends AbstractController
         } else {
             $return['messages']['courses'][] = 'Nutrition course already exists';
         }
+
+        $review = new Review;
+        $review->setUser($customerUser);
+        $review->setCourse($nutritionCourse);
+        $review->setComment('El curso está bien');
+        $review->setReviewDate(new \DateTime);
+        $this->reviewRepository->save($review, true);
+
+        $review = new Review;
+        $review->setUser($adminUser);
+        $review->setCourse($nutritionCourse);
+        $review->setComment('El curso está bien');
+        $review->setReviewDate(new \DateTime);
+        $this->reviewRepository->save($review, true);
+
+
 
         if (!$crossFitCourse) {
             $crossFitCourse = new Course;
