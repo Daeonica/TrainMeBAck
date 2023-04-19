@@ -91,6 +91,8 @@ class TestController extends AbstractController
             $return['messages']['users'][] = 'Customer user already exists';
         }
 
+        //TODO cambiar el admin user por daniuser,afnanuser,pauuser
+
         if (!$adminUser) {
             $adminUser = new User;
             $adminUser->setName('admin');
