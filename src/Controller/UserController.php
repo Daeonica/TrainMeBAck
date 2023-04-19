@@ -71,7 +71,7 @@ class UserController extends AbstractController
                 $return = [
                     'code' => '400',
                     'status' => 'error',
-                    'messages' => ['Data not received']
+                    'messages' => ['User with this email not exists']
                 ];
             }
         }
