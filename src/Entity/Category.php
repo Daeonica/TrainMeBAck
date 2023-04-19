@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Course;
 
@@ -28,6 +29,9 @@ class Category
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Publication::class)]
     private Collection $publications;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $img_path = null;
 
     public function __construct()
     {
@@ -107,6 +111,18 @@ class Category
                 $publication->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImgPath(): ?string
+    {
+        return $this->img_path;
+    }
+
+    public function setImgPath(?string $img_path): self
+    {
+        $this->img_path = $img_path;
 
         return $this;
     }

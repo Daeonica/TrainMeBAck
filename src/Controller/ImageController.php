@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends AbstractController
 {
 
-    public function __construct(private UserRepository $userRepository, private CourseRepository $courseRepository){
+    public function __construct(private UserRepository $userRepository, private CourseRepository $courseRepository, private CategoryRepository $categoryRepository){
 
     }
 
@@ -168,5 +169,57 @@ class ImageController extends AbstractController
         $response = new BinaryFileResponse($path);
 
         return $response;
+    }
+
+
+    #[Route('/category/image/{id}', methods: ['GET'])]
+
+    public function getCategoryImage($id, Request $request)
+    {
+
+        $category = $this->categoryRepository->find($id);
+        $path = $this->getParameter('images_directory') . '/category/' . $category->getImgPath();
+        $response = new BinaryFileResponse($path);
+
+        return $response;
+    }
+
+
+    #[Route('/category/upload/image/{id}', methods: ['POST'])]
+    public function uploadImageCategory($id, Request $request)
+    {
+        $category = $this->categoryRepository->find($id);
+        $return = [];
+
+        if ($category != null) {
+            $file = $request->files->get('file', null);
+            if ($file) {
+                $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
+                try {
+                    $file->move($this->getParameter('images_directory') . '/category', $fileName);
+                    $category->setImgPath($fileName);
+
+                    $this->categoryRepository->save($category, true);
+                    $return = [
+                        'code' => '200',
+                        'status' => 'success',
+                        'messages' => ['Image saved successfully']
+                    ];
+                } catch (FileException $e) {
+                    $return = [
+                        'code' => '400',
+                        'status' => 'error',
+                        'messages' => ['Image not saved', $e]
+                    ];
+                }
+            } else {
+                $return = [
+                    'code' => '400',
+                    'status' => 'error',
+                    'messages' => ['File not found']
+                ];
+            }
+        }
+        return new JsonResponse($return);
     }
 }
