@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Validator\Constraints\DateTime as ConstraintsDateTime;
 
+
 class UserController extends AbstractController
 {
     public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository, private CustomerSupportRepository $customerSupportRepository)
@@ -405,5 +406,41 @@ class UserController extends AbstractController
         }
 
         return new JsonResponse($return);
+    }
+
+    #[Route('/getTrainers', methods: ['GET'])]
+    public function getTrainers()
+    {   
+        $return = [];
+        $role = $this->roleRepository->findOneBy(['key_value' => 'trainer']);
+        $trainers = $role->getUsers()->toArray();
+        
+        foreach ($trainers as $trainer) {
+            $return[] = $trainer->getDataInArray();
+        }
+        return new JsonResponse($return);
+        
+    }
+
+
+    #[Route('/trainer/get-by-id/{id}', methods: ['GET'])]
+    public function getTrainersForId($id)
+    {
+        $return=[];
+        $trainer = $this->userRepository->find($id);
+
+        if ($trainer->getRole()->getKeyValue() == 'trainer') {
+            $return["status"] = 'success';
+            $return["code"] = '200';
+            $return["trainer"]= $trainer->getDataInArray();
+        }else{
+            $return["status"] = 'error';
+            $return["code"] = '400';
+            $return["message"][] = 'No existe el entrenador requerido';
+        }
+
+
+        return new JsonResponse($return);
+        
     }
 }

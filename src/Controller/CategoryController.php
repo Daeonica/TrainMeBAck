@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
+use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryController extends AbstractController
 {
 
-    public function __construct(private CategoryRepository $categoryRepository)
+    public function __construct(private CategoryRepository $categoryRepository, private CourseRepository $courseRepository)
     {
     }
 
@@ -40,6 +41,41 @@ class CategoryController extends AbstractController
 
         return new JsonResponse($categories);
     }
+
+
+    #[Route('/category/getCourses/{id}', methods: ['GET'])]
+    public function getCoursesForCategory($id): JsonResponse
+    {
+        $return = [];
+        $category = $this->categoryRepository->findOneBy(["id"=>$id]); //obtengo la categoria
+        $courses = $this->courseRepository->findAll(); //obtengo todos los cursos
+        $return['category'] = $category->getDataInArray();
+
+        foreach ($courses as $course) {
+            $category = $course->getCategory();
+            $idCategory = $category->getId();
+
+            if($idCategory == $id){
+                $return['courses'][] = $course->getDataInArray();    
+            }    
+        }
+
+        if(empty($return)){
+            $return = [
+                'code' => '400',
+                'status' => 'error',
+                'messages' => ['No courses founded with this category']
+            ];
+            
+        }else{
+            $return['status'] = 'success';
+            $return['code'] = 200;
+        }
+
+
+        return new JsonResponse($return);
+    }
+    
 
     #[Route('/category/update', methods: ['PUT'])]
     public function setCategory(Request $request): JsonResponse
