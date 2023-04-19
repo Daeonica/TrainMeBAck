@@ -68,8 +68,14 @@ class TestController extends AbstractController
             $return['messages']['roles'][] = 'Customer role already exists';
         }
 
-        $adminUser   = $this->userRepository->findOneBy(['email' => 'admin@user.com']);
+        $daniUser   = $this->userRepository->findOneBy(['email' => 'dani@admin.com']);
+        $afnanUser   = $this->userRepository->findOneBy(['email' => 'afnan@admin.com']);
+        $pauUser   = $this->userRepository->findOneBy(['email' => 'pau@admin.com']);
+
         $trainerUser    = $this->userRepository->findOneBy(['email' => 'trainer@user.com']);
+        $trainerUser1    = $this->userRepository->findOneBy(['email' => 'trainer1@user.com']);
+        $trainerUser2    = $this->userRepository->findOneBy(['email' => 'trainer2@user.com']);
+
         $customerUser   = $this->userRepository->findOneBy(['email' => 'customer@user.com']);
 
         $password = password_hash('admin123', PASSWORD_BCRYPT);
@@ -91,18 +97,50 @@ class TestController extends AbstractController
             $return['messages']['users'][] = 'Customer user already exists';
         }
 
-        //TODO cambiar el admin user por daniuser,afnanuser,pauuser
 
-        if (!$adminUser) {
-            $adminUser = new User;
-            $adminUser->setName('admin');
-            $adminUser->setSurname('admin');
-            $adminUser->setDescription('admin');
-            $adminUser->setEmail('admin@user.com');
-            $adminUser->setPassword($password);
-            $adminUser->setRole($admin);
-            $adminUser->setRegisterDate(new \DateTime);
-            $this->userRepository->save($adminUser, true);
+        if (!$daniUser) {
+            $daniUser = new User;
+            $daniUser->setName('dani');
+            $daniUser->setSurname('urbano');
+            $daniUser->setDescription('admin');
+            $daniUser->setEmail('dani@admin.com');
+            $daniUser->setPassword($password);
+            $daniUser->setRole($admin);
+            $daniUser->setImgPath('dani.jpg');
+            $daniUser->setRegisterDate(new \DateTime);
+            $this->userRepository->save($daniUser, true);
+            $return['messages']['users'][] = 'Dani user created';
+        } else {
+            $return['messages']['users'][] = 'Dani user already exists';
+        }
+
+        if (!$afnanUser) {
+            $afnanUser = new User;
+            $afnanUser->setName('afnan');
+            $afnanUser->setSurname('amin');
+            $afnanUser->setDescription('admin');
+            $afnanUser->setEmail('afnan@admin.com');
+            $afnanUser->setPassword($password);
+            $afnanUser->setRole($admin);
+            $afnanUser->setImgPath('afnan.jpg');
+            $afnanUser->setRegisterDate(new \DateTime);
+            $this->userRepository->save($afnanUser, true);
+            $return['messages']['users'][] = 'Afnan user created';
+        } else {
+            $return['messages']['users'][] = 'Afnan user already exists';
+        }
+
+        if (!$pauUser) {
+            $pauUser = new User;
+            $pauUser->setName('pau');
+            $pauUser->setSurname('exposito');
+            $pauUser->setDescription('admin');
+            $pauUser->setEmail('pau@admin.com');
+            $pauUser->setPassword($password);
+            $pauUser->setRole($admin);
+            $pauUser->setImgPath('pau.jpg');
+            $pauUser->setRegisterDate(new \DateTime);
+            $this->userRepository->save($pauUser, true);
             $return['messages']['users'][] = 'Admin user created';
         } else {
             $return['messages']['users'][] = 'Admin user already exists';
@@ -110,19 +148,56 @@ class TestController extends AbstractController
 
         if (!$trainerUser) {
             $trainerUser = new User;
-            $trainerUser->setName('trainer');
-            $trainerUser->setSurname('trainer');
-            $trainerUser->setDescription('trainer');
+            $trainerUser->setName('Sergio');
+            $trainerUser->setSurname('Peinado');
+            $trainerUser->setDescription('Entrenador licenciado en ciencias del deporte. Especialista en pérdida de grasa');
             $trainerUser->setEmail('trainer@user.com');
             $trainerUser->setPassword($password);
             $trainerUser->setRole($trainer);
             $trainerUser->setPassword($password);
+            $trainerUser->setImgPath('sergioPeinado.jpeg');
             $trainerUser->setRegisterDate(new \DateTime);
             $this->userRepository->save($trainerUser, true);
             $return['messages']['users'][] = 'Trainer user created';
         } else {
             $return['messages']['users'][] = 'Trainer user already exists';
         }
+
+        if (!$trainerUser1) {
+            $trainerUser1 = new User;
+            $trainerUser1->setName('David');
+            $trainerUser1->setSurname('Marchante');
+            $trainerUser1->setDescription('Master en entrenamiento de fuerza y powerlifting. Record del mundo de la dominada más pesada del mundo');
+            $trainerUser1->setEmail('trainer1@user.com');
+            $trainerUser1->setPassword($password);
+            $trainerUser1->setRole($trainer);
+            $trainerUser1->setPassword($password);
+            $trainerUser1->setImgPath('davidMarchante.jpeg');
+            $trainerUser1->setRegisterDate(new \DateTime);
+            $this->userRepository->save($trainerUser1, true);
+            $return['messages']['users'][] = 'Trainer user created';
+        } else {
+            $return['messages']['users'][] = 'Trainer user already exists';
+        }
+
+        if (!$trainerUser2) {
+            $trainerUser2 = new User;
+            $trainerUser2->setName('Yerai');
+            $trainerUser2->setSurname('Alonso');
+            $trainerUser2->setDescription('Entrenador personal certificado por la NCSA y especialista en calistenia');
+            $trainerUser2->setEmail('trainer2@user.com');
+            $trainerUser2->setPassword($password);
+            $trainerUser2->setRole($trainer);
+            $trainerUser2->setPassword($password);
+            $trainerUser2->setImgPath('yeraiAlonso.jpg');
+            $trainerUser2->setRegisterDate(new \DateTime);
+            $this->userRepository->save($trainerUser2, true);
+            $return['messages']['users'][] = 'Trainer user created';
+        } else {
+            $return['messages']['users'][] = 'Trainer user already exists';
+        }
+
+
 
 
         $nutritionCategory      = $this->categoryRepository->findOneBy(['name' => 'nutrition']);
@@ -133,6 +208,7 @@ class TestController extends AbstractController
             $nutritionCategory = new Category;
             $nutritionCategory->setName('nutrition');
             $nutritionCategory->setDescription('nutrition');
+            $nutritionCategory->setImgPath('nutricion.jpg');
             $this->categoryRepository->save($nutritionCategory, true);
             $return['messages']['categories'][] = 'Nutrition category created';
         } else {
@@ -143,6 +219,7 @@ class TestController extends AbstractController
             $crossFitCategory = new Category;
             $crossFitCategory->setName('crossfit');
             $crossFitCategory->setDescription('crossfit');
+            $crossFitCategory->setImgPath('crossfit.jpg');
             $this->categoryRepository->save($crossFitCategory, true);
             $return['messages']['categories'][] = 'Crossfit category created';
         } else {
@@ -153,6 +230,7 @@ class TestController extends AbstractController
             $powerliftingCategory = new Category;
             $powerliftingCategory->setName('powerlifting');
             $powerliftingCategory->setDescription('powerlifting');
+            $powerliftingCategory->setImgPath('powerlifting.jpg');
             $this->categoryRepository->save($powerliftingCategory, true);
             $return['messages']['categories'][] = 'Powerlifitng category created';
         } else {
@@ -171,6 +249,8 @@ class TestController extends AbstractController
             $nutritionCourse->setPrice(45);
             $nutritionCourse->setUser($trainerUser);
             $nutritionCourse->setCategory($nutritionCategory);
+            $nutritionCourse->setImgPath('nutritionCourse.jpg');
+            $nutritionCourse->setDocumentRoot('nutricion.pdf');
             $this->courseRepository->save($nutritionCourse, true);
             $return['messages']['courses'][] = 'Nutrition course created';
         } else {
@@ -185,7 +265,7 @@ class TestController extends AbstractController
         $this->reviewRepository->save($review, true);
 
         $review = new Review;
-        $review->setUser($adminUser);
+        $review->setUser($daniUser);
         $review->setCourse($nutritionCourse);
         $review->setComment('El curso está bien');
         $review->setReviewDate(new \DateTime);
@@ -200,6 +280,8 @@ class TestController extends AbstractController
             $crossFitCourse->setPrice(45);
             $crossFitCourse->setUser($trainerUser);
             $crossFitCourse->setCategory($crossFitCategory);
+            $crossFitCourse->setImgPath('crossfitCourse.jpg');
+            $crossFitCourse->setDocumentRoot('crossfit.pdf');
             $this->courseRepository->save($crossFitCourse, true);
             $return['messages']['courses'][] = 'Crossfit course created';
         } else {
@@ -213,6 +295,8 @@ class TestController extends AbstractController
             $powerliftingCourse->setPrice(45);
             $powerliftingCourse->setUser($trainerUser);
             $powerliftingCourse->setCategory($powerliftingCategory);
+            $powerliftingCourse->setImgPath('powerliftingCourse.jpg');
+            $powerliftingCourse->setDocumentRoot('powerlifting.pdf');
             $this->courseRepository->save($powerliftingCourse, true);
             $return['messages']['courses'][] = 'Powerlifitng course created';
         } else {
