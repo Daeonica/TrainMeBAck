@@ -183,7 +183,7 @@ class Course
             "img_path" => $this->img_path,
             "user" => $this->user->getDataInArray(),
             "category" => $this->category->getDataInArray(),
-            "buy_user_courses" => $this->buyUserCourses,
+            // "buy_user_courses" => $this->buyUserCourses,
         ];
         return $array;
     }
