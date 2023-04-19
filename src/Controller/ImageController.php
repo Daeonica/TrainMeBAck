@@ -132,7 +132,7 @@ class ImageController extends AbstractController
             if ($file) {
                 $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                 try {
-                    $file->move($this->getParameter('images_directory') . '/course/document', $fileName);
+                    $file->move($this->getParameter('images_directory') . '/course/document/', $fileName);
                     $course->setDocumentRoot($fileName);
 
                     $this->courseRepository->save($course, true);
