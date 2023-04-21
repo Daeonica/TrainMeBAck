@@ -45,6 +45,9 @@ class Course
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviews;
 
+    #[ORM\Column(length: 1000, nullable: true)]
+    private ?string $video_path = null;
+
     public function __construct()
     {
         $this->buyUserCourses = new ArrayCollection();
@@ -214,6 +217,18 @@ class Course
                 $review->setCourse(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVideoPath(): ?string
+    {
+        return $this->video_path;
+    }
+
+    public function setVideoPath(?string $video_path): self
+    {
+        $this->video_path = $video_path;
 
         return $this;
     }
