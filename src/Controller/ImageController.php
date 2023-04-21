@@ -260,13 +260,12 @@ class ImageController extends AbstractController
                     $return = [
                         'code' => '400',
                         'status' => 'error',
-                        'messages' => [(string)$errors]
+                        'messages' => ['Uploaded file is not a valid video file (MP4 extension).']
                     ];
                 } else {
                     $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                     try {
                         $file->move($this->getParameter('images_directory') . '/course/video/', $fileName);
-                        dd($file, $fileName);
                         $course->setVideoPath($fileName);
 
                         $this->courseRepository->save($course, true);
