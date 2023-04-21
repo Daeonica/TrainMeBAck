@@ -43,7 +43,8 @@ class Category
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description
+            'description' => $this->description,
+            'img_path' => $this->img_path,
         ];
     }
 
