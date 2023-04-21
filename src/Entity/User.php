@@ -47,12 +47,16 @@ class User
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviews;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: BuyUserCourse::class, orphanRemoval: true)]
+    private Collection $buyUserCourse;
+
     
 
     public function __construct()
     {
         $this->courses = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->buyUserCourse = new ArrayCollection();
     }
 
     //
@@ -173,6 +177,24 @@ class User
         if (!$this->courses->contains($course)) {
             $this->courses->add($course);
             $course->setUser($this);
+        }
+
+        return $this;
+    }
+
+     /**
+     * @return Collection<int, BuyUserCourse>
+     */
+    public function getPurchasedCourses(): Collection
+    {
+        return $this->buyUserCourse;
+    }
+
+    public function addPurchasedCourses(BuyUserCourse $buyUserCourse): self
+    {
+        if (!$this->buyUserCourse->contains($buyUserCourse)) {
+            $this->buyUserCourse->add($buyUserCourse);
+            $buyUserCourse->setUser($this);
         }
 
         return $this;

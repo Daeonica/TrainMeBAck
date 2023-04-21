@@ -342,14 +342,35 @@ class CourseController extends AbstractController
     #[Route('/purchased-courses/{id}', methods: ['GET'])]
     public function getPurchasedCourses($id, Request $request)
     {
-        $purchasedCourses = $this->buyUserCourseRepository->findBy(['user_id' => $id]);
-        $courses = [];
+        $purchasedCourses = $this->buyUserCourseRepository->findBy(['user' => $id]);
+        $return = [];
+
         foreach ($purchasedCourses as $purchasedCourse) {
-            $courses[] = $purchasedCourse->getCourse()->getDataInArray();
+            $course     = $purchasedCourse->getCourse();
+            $user       = $course->getUser();
+            $category   = $course->getCategory();
+            $return['purchases'][] = [
+                'id' => $purchasedCourse->getId(),
+                'course' => [
+                    'id'            => $course->getId(),
+                    'name'          => $course->getName(),
+                    'price'         => $course->getPrice(),
+                    'description'   => $course->getDescription(),
+                ],
+                'trainer' => [
+                    'id'            => $user->getId(),
+                    'name'          => $user->getName(),
+                    'surname'       => $user->getSurname(),
+                ],
+                'category' => [
+                    'id'            => $category->getId(),
+                    'name'          => $category->getName(),
+                ],
+                'date' => $purchasedCourse->getTransactionDate()->format('Y-m-d H:i:s')
+            ];
         }
 
-
-        return new JsonResponse($courses);
+        return new JsonResponse($return);
     }
 
     #[Route('/is-purchased/{user_id}/{course_id}', methods: ['GET'])]
@@ -386,7 +407,7 @@ class CourseController extends AbstractController
                 $return['code'] = '200';
                 $return['status'] = 'success';
                 $return['messages'][] = 'Course purchased successfully';
-            }else{
+            } else {
                 $return['code'] = '400';
                 $return['status'] = 'error';
                 $return['messages'][] = 'Course is already purchased';

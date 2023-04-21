@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BuyUserCourseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,11 +21,11 @@ class BuyUserCourse
 
     #[ORM\ManyToOne(inversedBy: 'buyUserCourses')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private User $user;
 
     #[ORM\ManyToOne(inversedBy: 'buyUserCourses')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Course $course = null;
+    private Course $course;
 
     public function getId(): ?int
     {
@@ -65,4 +67,8 @@ class BuyUserCourse
 
         return $this;
     }
+
+    
+
+    
 }
