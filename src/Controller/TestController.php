@@ -87,6 +87,7 @@ class TestController extends AbstractController
             $customerUser->setSurname('customer');
             $customerUser->setDescription('customer');
             $customerUser->setEmail('customer@user.com');
+            $customerUser->setImgPath('chad.jpg');
             $customerUser->setPassword($password);
             $customerUser->setRole($customer);
             $customerUser->setRegisterDate(new \DateTime);
@@ -102,7 +103,7 @@ class TestController extends AbstractController
             $daniUser = new User;
             $daniUser->setName('dani');
             $daniUser->setSurname('urbano');
-            $daniUser->setDescription('admin');
+            $daniUser->setDescription('Front-End developer Back-End helper, and Documentation manager');
             $daniUser->setEmail('dani@admin.com');
             $daniUser->setPassword($password);
             $daniUser->setRole($admin);
@@ -118,7 +119,7 @@ class TestController extends AbstractController
             $afnanUser = new User;
             $afnanUser->setName('afnan');
             $afnanUser->setSurname('amin');
-            $afnanUser->setDescription('admin');
+            $afnanUser->setDescription('Back-End PHP Specialist and Front-End helper.');
             $afnanUser->setEmail('afnan@admin.com');
             $afnanUser->setPassword($password);
             $afnanUser->setRole($admin);
@@ -134,7 +135,7 @@ class TestController extends AbstractController
             $pauUser = new User;
             $pauUser->setName('pau');
             $pauUser->setSurname('exposito');
-            $pauUser->setDescription('admin');
+            $pauUser->setDescription('UX/UI Designer and Project Manager.');
             $pauUser->setEmail('pau@admin.com');
             $pauUser->setPassword($password);
             $pauUser->setRole($admin);
@@ -249,6 +250,7 @@ class TestController extends AbstractController
             $nutritionCourse->setPrice(45);
             $nutritionCourse->setUser($trainerUser);
             $nutritionCourse->setCategory($nutritionCategory);
+            $nutritionCourse->setVideoPath('culturista-1.mp4');
             $nutritionCourse->setImgPath('nutritionCourse.jpg');
             $nutritionCourse->setDocumentRoot('nutricion.pdf');
             $this->courseRepository->save($nutritionCourse, true);
@@ -281,6 +283,7 @@ class TestController extends AbstractController
             $crossFitCourse->setUser($trainerUser);
             $crossFitCourse->setCategory($crossFitCategory);
             $crossFitCourse->setImgPath('crossfitCourse.jpg');
+            $crossFitCourse->setVideoPath('culturista-2.mp4');
             $crossFitCourse->setDocumentRoot('crossfit.pdf');
             $this->courseRepository->save($crossFitCourse, true);
             $return['messages']['courses'][] = 'Crossfit course created';
@@ -296,6 +299,7 @@ class TestController extends AbstractController
             $powerliftingCourse->setUser($trainerUser);
             $powerliftingCourse->setCategory($powerliftingCategory);
             $powerliftingCourse->setImgPath('powerliftingCourse.jpg');
+            $powerliftingCourse->setVideoPath('esguince.mp4');
             $powerliftingCourse->setDocumentRoot('powerlifting.pdf');
             $this->courseRepository->save($powerliftingCourse, true);
             $return['messages']['courses'][] = 'Powerlifitng course created';
