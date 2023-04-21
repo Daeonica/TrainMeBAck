@@ -63,12 +63,16 @@ class ImageController extends AbstractController
 
     public function getUserImage($id, Request $request)
     {
-
+        $response = [];
         $user = $this->userRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
-        $response = new BinaryFileResponse($path);
-
-        return $response;
+        
+        if ($user->getImgPath()) {
+            $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
+            $response = new BinaryFileResponse($path);
+            return $response;
+        }
+        
+        return new JsonResponse($response);
     }
 
     #[Route('/course/upload/image/{id}', methods: ['POST'])]
@@ -115,10 +119,16 @@ class ImageController extends AbstractController
     {
 
         $course = $this->courseRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/course/' . $course->getImgPath();
-        $response = new BinaryFileResponse($path);
+        $response = [];
 
-        return $response;
+        if ($course->getImgPath()) {
+            $path = $this->getParameter('images_directory') . '/course/' . $course->getImgPath();
+            $response = new BinaryFileResponse($path);
+            return $response;
+        }
+ 
+
+        return new JsonResponse($response);
     }
 
     #[Route('/course/upload/document/{id}', methods: ['POST'])]
