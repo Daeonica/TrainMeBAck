@@ -12,13 +12,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\File as FileConstraint;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 
 class ImageController extends AbstractController
 {
 
-    public function __construct(private UserRepository $userRepository, private CourseRepository $courseRepository, private CategoryRepository $categoryRepository){
-
+    public function __construct(private UserRepository $userRepository, private CourseRepository $courseRepository, private CategoryRepository $categoryRepository)
+    {
     }
 
     #[Route('/user/upload/{id}', methods: ['POST'])]
@@ -65,13 +69,13 @@ class ImageController extends AbstractController
     {
         $response = [];
         $user = $this->userRepository->find($id);
-        
+
         if ($user->getImgPath()) {
             $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
             $response = new BinaryFileResponse($path);
             return $response;
         }
-        
+
         return new JsonResponse($response);
     }
 
@@ -126,7 +130,7 @@ class ImageController extends AbstractController
             $response = new BinaryFileResponse($path);
             return $response;
         }
- 
+
 
         return new JsonResponse($response);
     }
@@ -170,7 +174,6 @@ class ImageController extends AbstractController
     }
 
     #[Route('/course/document/{id}', methods: ['GET'])]
-
     public function getCourseDocument($id)
     {
 
@@ -183,7 +186,6 @@ class ImageController extends AbstractController
 
 
     #[Route('/category/image/{id}', methods: ['GET'])]
-
     public function getCategoryImage($id, Request $request)
     {
 
@@ -231,5 +233,76 @@ class ImageController extends AbstractController
             }
         }
         return new JsonResponse($return);
+    }
+
+    #[Route('/course/upload/video/{id}', methods: ['POST'])]
+    public function uploadVideoCourse($id, Request $request, ValidatorInterface $validator)
+    {
+        $course = $this->courseRepository->find($id);
+        $return = [];
+
+        if ($course != null) {
+            $file = $request->files->get('file', null);
+            if ($file instanceof UploadedFile) {
+                // Agregar restricción de validación de archivo
+                $fileConstraint = new FileConstraint([
+                    'mimeTypes' => [
+                        'video/mp4',
+                        'video/quicktime', // Para archivos .mov
+                        // Agregar más tipos MIME de video si es necesario
+                    ],
+                    'mimeTypesMessage' => 'Por favor, carga un archivo de video válido.',
+                ]);
+
+                // Validar el archivo
+                $errors = $validator->validate($file, $fileConstraint);
+
+                if (count($errors) > 0) {
+                    $return = [
+                        'code' => '400',
+                        'status' => 'error',
+                        'messages' => [(string)$errors]
+                    ];
+                } else {
+                    $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
+                    try {
+                        $file->move($this->getParameter('images_directory') . '/course/video/', $fileName);
+                        $course->setDocumentRoot($fileName);
+
+                        $this->courseRepository->save($course, true);
+                        $return = [
+                            'code' => '200',
+                            'status' => 'success',
+                            'messages' => ['Video saved successfully']
+                        ];
+                    } catch (FileException $e) {
+                        $return = [
+                            'code' => '400',
+                            'status' => 'error',
+                            'messages' => ['Video not saved', $e]
+                        ];
+                    }
+                }
+            } else {
+                $return = [
+                    'code' => '400',
+                    'status' => 'error',
+                    'messages' => ['File not found']
+                ];
+            }
+        }
+        return new JsonResponse($return);
+    }
+
+
+    #[Route('/course/video/{id}', methods: ['GET'])]
+    public function getCourseVideo($id)
+    {
+
+        $course = $this->courseRepository->find($id);
+        $path = $this->getParameter('images_directory') . '/course/video/' . $course->getDocumentRoot();
+        $response = new BinaryFileResponse($path);
+
+        return $response;
     }
 }
