@@ -349,20 +349,22 @@ class CourseController extends AbstractController
             $course     = $purchasedCourse->getCourse();
             $user       = $course->getUser();
             $category   = $course->getCategory();
-            dd($category);
             $return['purchases'][] = [
                 'id' => $purchasedCourse->getId(),
                 'course' => [
+                    'id'            => $course->getId(),
                     'name'          => $course->getName(),
                     'price'         => $course->getPrice(),
-                    'category'      => $category,
+                    'description'   => $course->getDescription(),
                 ],
-                'user' => [
+                'trainer' => [
+                    'id'            => $user->getId(),
                     'name'          => $user->getName(),
                     'surname'       => $user->getSurname(),
                 ],
                 'category' => [
-                    'name'          => $category,
+                    'id'            => $category->getId(),
+                    'name'          => $category->getName(),
                 ],
                 'date' => $purchasedCourse->getTransactionDate()->format('Y-m-d H:i:s')
             ];
