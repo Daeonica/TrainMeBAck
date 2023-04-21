@@ -266,8 +266,8 @@ class ImageController extends AbstractController
                     $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                     try {
                         $file->move($this->getParameter('images_directory') . '/course/video/', $fileName);
+                        dd($file, $fileName);
                         $course->setVideoPath($fileName);
-                        dd($course);
 
                         $this->courseRepository->save($course, true);
                         $return = [
