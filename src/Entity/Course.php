@@ -184,6 +184,7 @@ class Course
             "document_root" => $this->document_root,
             "price" => $this->price,
             "img_path" => $this->img_path,
+            "video_path" => $this->category->getImgPath(),
             "user" => $this->user->getDataInArray(),
             "category" => $this->category->getDataInArray(),
             // "buy_user_courses" => $this->buyUserCourses,

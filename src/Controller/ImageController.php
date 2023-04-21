@@ -236,8 +236,7 @@ class ImageController extends AbstractController
     }
 
     #[Route('/course/upload/video/{id}', methods: ['POST'])]
-    public function uploadVideoCourse($id, Request $request, ValidatorInterface $validator)
-    {
+    public function uploadVideoCourse($id, Request $request, ValidatorInterface $validator){
         $course = $this->courseRepository->find($id);
         $return = [];
 
@@ -267,13 +266,15 @@ class ImageController extends AbstractController
                     $fileName = date('YYYY-mm-dd') . time() . '.' . $file->guessExtension();
                     try {
                         $file->move($this->getParameter('images_directory') . '/course/video/', $fileName);
-                        $course->setDocumentRoot($fileName);
+                        $course->setVideoPath($fileName);
+                        dd($course);
 
                         $this->courseRepository->save($course, true);
                         $return = [
                             'code' => '200',
                             'status' => 'success',
-                            'messages' => ['Video saved successfully']
+                            'messages' => ['Video saved successfully'],
+                            'course'    => $course->getDataInArray()
                         ];
                     } catch (FileException $e) {
                         $return = [
@@ -300,7 +301,7 @@ class ImageController extends AbstractController
     {
 
         $course = $this->courseRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/course/video/' . $course->getDocumentRoot();
+        $path = $this->getParameter('images_directory') . '/course/video/' . $course->getVideoPath();
         $response = new BinaryFileResponse($path);
 
         return $response;
