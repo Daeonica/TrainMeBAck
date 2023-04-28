@@ -23,9 +23,6 @@ final class Version20230127213346 extends AbstractMigration
         $this->addSql('CREATE TABLE buy_user_course (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, course_id INT NOT NULL, transaction_date DATETIME NOT NULL, INDEX IDX_38625CC4A76ED395 (user_id), INDEX IDX_38625CC4591CC992 (course_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE buy_user_course ADD CONSTRAINT FK_38625CC4A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE buy_user_course ADD CONSTRAINT FK_38625CC4591CC992 FOREIGN KEY (course_id) REFERENCES course (id)');
-        $this->addSql('ALTER TABLE contability ADD sponsor_id INT NOT NULL');
-        $this->addSql('ALTER TABLE contability ADD CONSTRAINT FK_9645EA3612F7FB51 FOREIGN KEY (sponsor_id) REFERENCES sponsor (id)');
-        $this->addSql('CREATE INDEX IDX_9645EA3612F7FB51 ON contability (sponsor_id)');
         $this->addSql('ALTER TABLE course ADD user_id INT NOT NULL');
         $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB9A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('CREATE INDEX IDX_169E6FB9A76ED395 ON course (user_id)');
@@ -48,9 +45,7 @@ final class Version20230127213346 extends AbstractMigration
         $this->addSql('ALTER TABLE buy_user_course DROP FOREIGN KEY FK_38625CC4A76ED395');
         $this->addSql('ALTER TABLE buy_user_course DROP FOREIGN KEY FK_38625CC4591CC992');
         $this->addSql('DROP TABLE buy_user_course');
-        $this->addSql('ALTER TABLE contability DROP FOREIGN KEY FK_9645EA3612F7FB51');
         $this->addSql('DROP INDEX IDX_9645EA3612F7FB51 ON contability');
-        $this->addSql('ALTER TABLE contability DROP sponsor_id');
         $this->addSql('ALTER TABLE course DROP FOREIGN KEY FK_169E6FB9A76ED395');
         $this->addSql('DROP INDEX IDX_169E6FB9A76ED395 ON course');
         $this->addSql('ALTER TABLE course DROP user_id');
