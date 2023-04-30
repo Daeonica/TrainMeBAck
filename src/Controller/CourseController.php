@@ -425,4 +425,19 @@ class CourseController extends AbstractController
 
         return new JsonResponse($return);
     }
+
+    #[Route('/course/category/{category_id}', methods: ['GET'])]
+
+    public function getCoursesByCategory($category_id, Request $request)
+    {
+        $courses = $this->courseRepository->findBy(['category' => $category_id]);
+        $response = [];
+
+        foreach ($courses as $course) {
+            $response[] = $course->getDataInArray();
+        }
+
+        return new JsonResponse($response);
+    }
+
 }
