@@ -342,7 +342,6 @@ class UserController extends AbstractController
                         ];
                         $return['messages'][] = 'The password confirm is different';
                     }
-                    return new JsonResponse($return);
                 }
 
                 if ($return['code'] == '200') {
