@@ -274,6 +274,7 @@ class UserController extends AbstractController
                         $user->setName($array['name']);
                         $return["status"] = 'success';
                         $return["code"] = '200';
+                        $return["user"] = $user->getDataInArray();
                     } else {
                         $return = [
                             "status" => 'error',
