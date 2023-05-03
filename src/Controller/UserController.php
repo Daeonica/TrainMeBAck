@@ -326,7 +326,6 @@ class UserController extends AbstractController
                             ];
                             $return['messages'][] = 'User with this email exists';
                         }
-                        return new JsonResponse($return);
                     }
                 }
 
