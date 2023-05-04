@@ -86,7 +86,7 @@ class Review
             "id"            => $this->id,
             "user"          => $this->user->getDataInArray(),
             "course"        => $this->course->getDataInArray(),
-            "review_date"   => date_format($this->review_date,'dd/mm/yy' ),
+            "review_date"   => date_format($this->review_date,'d/m/y' ),
             "comment"       => $this->comment
         ];
         return $array;

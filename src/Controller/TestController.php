@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\BuyUserCourse;
 use App\Entity\Course;
 use App\Entity\Category;
 use App\Entity\Review;
 use App\Entity\Role;
 use App\Entity\User;
+use App\Repository\BuyUserCourseRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\ReviewRepository;
@@ -20,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestController extends AbstractController
 {
 
-    public function __construct(private ReviewRepository $reviewRepository, private CourseRepository $courseRepository, private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
+    public function __construct(private BuyUserCourseRepository $buyUserCourseRepository, private ReviewRepository $reviewRepository, private CourseRepository $courseRepository, private  UserRepository $userRepository, private  CategoryRepository $categoryRepository, private RoleRepository $roleRepository)
     {
     }
 
@@ -97,6 +99,8 @@ class TestController extends AbstractController
         } else {
             $return['messages']['users'][] = 'Customer user already exists';
         }
+
+       
 
 
         if (!$daniUser) {
@@ -266,14 +270,12 @@ class TestController extends AbstractController
         $review->setReviewDate(new \DateTime);
         $this->reviewRepository->save($review, true);
 
-        $review = new Review;
-        $review->setUser($daniUser);
-        $review->setCourse($nutritionCourse);
-        $review->setComment('El curso está bien');
-        $review->setReviewDate(new \DateTime);
-        $this->reviewRepository->save($review, true);
 
-
+        $buy = new BuyUserCourse();
+        $buy->setUser($customerUser);
+        $buy->setCourse($nutritionCourse);
+        $buy->setTransactionDate(new \DateTime);
+        $this->buyUserCourseRepository->save($buy, true);
 
         if (!$crossFitCourse) {
             $crossFitCourse = new Course;
@@ -306,6 +308,8 @@ class TestController extends AbstractController
         } else {
             $return['messages']['courses'][] = 'Powerlifitng course already exists';
         }
+
+
 
         return new JsonResponse($return);
     }
