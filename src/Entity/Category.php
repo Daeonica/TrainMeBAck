@@ -27,15 +27,11 @@ class Category
     private Collection $courses;
 
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Publication::class)]
-    private Collection $publications;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $img_path = null;
 
     public function __construct()
     {
-        $this->publications = new ArrayCollection();
         $this->courses = new ArrayCollection();
     }
 
@@ -78,42 +74,11 @@ class Category
     }
 
     /**
-     * @return Collection<int, Publication>
-     */
-    public function getPublications(): Collection
-    {
-        return $this->publications;
-    }
-
-    public function addPublication(Publication $publication): self
-    {
-        if (!$this->publications->contains($publication)) {
-            $this->publications->add($publication);
-            $publication->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Course>
      */
     public function getCourses(): Collection
     {
         return $this->courses;
-    }
-
-
-    public function removePublication(Publication $publication): self
-    {
-        if ($this->publications->removeElement($publication)) {
-            // set the owning side to null (unless already changed)
-            if ($publication->getCategory() === $this) {
-                $publication->setCategory(null);
-            }
-        }
-
-        return $this;
     }
 
     public function getImgPath(): ?string

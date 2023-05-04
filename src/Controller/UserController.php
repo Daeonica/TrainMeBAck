@@ -412,11 +412,14 @@ class UserController extends AbstractController
     {   
         $return = [];
         $role = $this->roleRepository->findOneBy(['key_value' => 'trainer']);
-        $trainers = $role->getUsers()->toArray();
+        if ($role) {
+            $trainers = $role->getUsers()->toArray();
         
-        foreach ($trainers as $trainer) {
-            $return[] = $trainer->getDataInArray();
+            foreach ($trainers as $trainer) {
+                $return[] = $trainer->getDataInArray();
+            }
         }
+     
         return new JsonResponse($return);
         
     }
