@@ -89,7 +89,7 @@ class TestController extends AbstractController
             $customerUser->setSurname('customer');
             $customerUser->setDescription('customer');
             $customerUser->setEmail('customer@user.com');
-            $customerUser->setImgPath('chad.jpg');
+            $customerUser->setImgPath('cliente.jpg');
             $customerUser->setPassword($password);
             $customerUser->setRole($customer);
             $customerUser->setRegisterDate(new \DateTime);
