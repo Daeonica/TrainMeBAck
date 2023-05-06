@@ -70,6 +70,8 @@ class TestController extends AbstractController
             $return['messages']['roles'][] = 'Customer role already exists';
         }
 
+        $password = password_hash('admin123', PASSWORD_BCRYPT);
+
         $daniUser   = $this->userRepository->findOneBy(['email' => 'dani@admin.com']);
         $afnanUser   = $this->userRepository->findOneBy(['email' => 'afnan@admin.com']);
         $pauUser   = $this->userRepository->findOneBy(['email' => 'pau@admin.com']);
@@ -80,7 +82,6 @@ class TestController extends AbstractController
 
         $customerUser   = $this->userRepository->findOneBy(['email' => 'customer@user.com']);
 
-        $password = password_hash('admin123', PASSWORD_BCRYPT);
 
 
         if (!$customerUser) {
@@ -202,8 +203,7 @@ class TestController extends AbstractController
             $return['messages']['users'][] = 'Trainer user already exists';
         }
 
-
-
+        // CATEGORY CREATING
 
         $lifeStyleCategory      = $this->categoryRepository->findOneBy(['name' => 'Vida saludable']);
         $runningCategory       = $this->categoryRepository->findOneBy(['name' => 'Running']);
@@ -242,14 +242,24 @@ class TestController extends AbstractController
             $return['messages']['categories'][] = 'Sport category already exists';
         }
 
-        $adidasCourse               = $this->courseRepository->findOneBy(['name' => 'Start to run']);
-        $correrParaPararCourse      = $this->courseRepository->findOneBy(['name' => 'Improve your running']);
-        $gimnasioCourse             = $this->courseRepository->findOneBy(['name' => 'Improve your gym routine with this exercises']);
-        $herbalifeCourse            = $this->courseRepository->findOneBy(['name' => 'Basics of nutrition']);
-        $nikeCourse                 = $this->courseRepository->findOneBy(['name' => 'Maraton preparation']);
-        $runningCourse              = $this->courseRepository->findOneBy(['name' => 'Your first 5k']);
-        $personalObjectivesCourse   = $this->courseRepository->findOneBy(['name' => 'Give it all in the weights and gain strength']);
-        $lifeStyleCourse            = $this->courseRepository->findOneBy(['name' => 'Basics for a healthy life style']);
+        // COURSE CREATIN
+
+        $adidasCourse                   = $this->courseRepository->findOneBy(['name' => 'Start to run']);
+        $correrParaPararCourse          = $this->courseRepository->findOneBy(['name' => 'Improve your running']);
+        $gimnasioCourse                 = $this->courseRepository->findOneBy(['name' => 'Improve your gym routine with this exercises']);
+        $herbalifeCourse                = $this->courseRepository->findOneBy(['name' => 'Basics of nutrition']);
+        $nikeCourse                     = $this->courseRepository->findOneBy(['name' => 'Maraton preparation']);
+        $runningCourse                  = $this->courseRepository->findOneBy(['name' => 'Your first 5k']);
+        $personalObjectivesCourse       = $this->courseRepository->findOneBy(['name' => 'Give it all in the weights and gain strength']);
+        $lifeStyleCourse                = $this->courseRepository->findOneBy(['name' => 'Basics for a healthy life style']);
+        $yogaBeginnersCourse            = $this->courseRepository->findOneBy(['name' => 'Yoga for beginners']);
+        $advancedCardioCourse           = $this->courseRepository->findOneBy(['name' => 'Advanced cardio workouts']);
+        $pilatesCoreStrengthCourse      = $this->courseRepository->findOneBy(['name' => 'Pilates for core strength']);
+        $cyclingEnduranceCourse         = $this->courseRepository->findOneBy(['name' => 'Cycling for endurance']);
+        $kickboxingSelfDefenseCourse    = $this->courseRepository->findOneBy(['name' => 'Kickboxing for self-defense']);
+        $swimmingAllLevelsCourse        = $this->courseRepository->findOneBy(['name' => 'Swimming for all levels']);
+        $functionalTrainingCourse       = $this->courseRepository->findOneBy(['name' => 'Functional training fundamentals']);
+        $stretchingFlexibilityCourse    = $this->courseRepository->findOneBy(['name' => 'Stretching and flexibility']);
 
         if (!$adidasCourse) {
             $adidasCourse = new Course;
@@ -379,6 +389,168 @@ class TestController extends AbstractController
             $return['messages']['courses'][] = 'Life style course already exists';
         }
 
+        // Course 1 - Yoga for beginners
+        if (!$yogaBeginnersCourse) {
+            $yogaBeginnersCourse = new Course;
+            $yogaBeginnersCourse->setName('Yoga for beginners');
+            $yogaBeginnersCourse->setDescription('Yoga for beginners, you will learn the basics of yoga, including poses, breathing techniques, and meditation.');
+            $yogaBeginnersCourse->setImgPath('yoga-beginners.jpg');
+            $yogaBeginnersCourse->setVideoPath('yoga-beginners.mp4');
+            $yogaBeginnersCourse->setPrice('25');
+            $yogaBeginnersCourse->setDocumentRoot('yoga-beginners.pdf');
+            $yogaBeginnersCourse->setCategory($lifeStyleCategory);
+            $yogaBeginnersCourse->setUser($davidTrainer);
+            $this->courseRepository->save($yogaBeginnersCourse, true);
+            $return['messages']['courses'][] = 'Yoga for beginners course created';
+        } else {
+            $return['messages']['courses'][] = 'Yoga for beginners course already exists';
+        }
+
+        // Course 2 - Advanced cardio workouts
+        if (!$advancedCardioCourse) {
+            $advancedCardioCourse = new Course;
+            $advancedCardioCourse->setName('Advanced cardio workouts');
+            $advancedCardioCourse->setDescription('Advanced cardio workouts, you will learn high intensity workouts to improve your cardiovascular endurance and overall fitness.');
+            $advancedCardioCourse->setImgPath('advanced-cardio.jpg');
+            $advancedCardioCourse->setVideoPath('advanced-cardio.mp4');
+            $advancedCardioCourse->setPrice('30');
+            $advancedCardioCourse->setDocumentRoot('advanced-cardio.pdf');
+            $advancedCardioCourse->setCategory($sportCategory);
+            $advancedCardioCourse->setUser($yerayTrainer);
+            $this->courseRepository->save($advancedCardioCourse, true);
+            $return['messages']['courses'][] = 'Advanced cardio workouts course created';
+        } else {
+            $return['messages']['courses'][] = 'Advanced cardio workouts course already exists';
+        }
+
+        // Course 3 - Pilates for core strength
+        if (!$pilatesCoreStrengthCourse) {
+            $pilatesCoreStrengthCourse = new Course;
+            $pilatesCoreStrengthCourse->setName('Pilates for core strength');
+            $pilatesCoreStrengthCourse->setDescription('Pilates for core strength, you will learn Pilates exercises to strengthen your core muscles and improve your posture and balance.');
+            $pilatesCoreStrengthCourse->setImgPath('pilates-core-strength.jpg');
+            $pilatesCoreStrengthCourse->setVideoPath('pilates-core-strength.mp4');
+            $pilatesCoreStrengthCourse->setPrice('28');
+            $pilatesCoreStrengthCourse->setDocumentRoot('pilates-core-strength.pdf');
+            $pilatesCoreStrengthCourse->setCategory($lifeStyleCategory);
+            $pilatesCoreStrengthCourse->setUser($sergioTrainer);
+            $this->courseRepository->save($pilatesCoreStrengthCourse, true);
+            $return['messages']['courses'][] = 'Pilates for core strength course created';
+        } else {
+            $return['messages']['courses'][] = 'Pilates for core strength course already exists';
+        }
+
+        // Course 4 - Cycling for endurance
+        if (!$cyclingEnduranceCourse) {
+            $cyclingEnduranceCourse = new Course;
+            $cyclingEnduranceCourse->setName('Cycling for endurance');
+            $cyclingEnduranceCourse->setDescription('Cycling for endurance, you will learn cycling techniques to build endurance, improve your cardiovascular fitness, and strengthen your lower body muscles.');
+            $cyclingEnduranceCourse->setImgPath('cycling-endurance.jpg');
+            $cyclingEnduranceCourse->setVideoPath('cycling-endurance.mp4');
+            $cyclingEnduranceCourse->setPrice('35');
+            $cyclingEnduranceCourse->setDocumentRoot('cycling-endurance.pdf');
+            $cyclingEnduranceCourse->setCategory($sportCategory);
+            $cyclingEnduranceCourse->setUser($yerayTrainer);
+            $this->courseRepository->save($cyclingEnduranceCourse, true);
+            $return['messages']['courses'][] = 'Cycling for endurance course created';
+        } else {
+            $return['messages']['courses'][] = 'Cycling for endurance course already exists';
+        }
+
+        // Course 5 - Kickboxing for self-defense
+        if (!$kickboxingSelfDefenseCourse) {
+            $kickboxingSelfDefenseCourse = new Course;
+            $kickboxingSelfDefenseCourse->setName('Kickboxing for self-defense');
+            $kickboxingSelfDefenseCourse->setDescription('Kickboxing for self-defense, you will learn kickboxing techniques for self-defense, including punches, kicks, and footwork.');
+            $kickboxingSelfDefenseCourse->setImgPath('kickboxing-self-defense.jpg');
+            $kickboxingSelfDefenseCourse->setVideoPath('kickboxing-self-defense.mp4');
+            $kickboxingSelfDefenseCourse->setPrice('40');
+            $kickboxingSelfDefenseCourse->setDocumentRoot('kickboxing-self-defense.pdf');
+            $kickboxingSelfDefenseCourse->setCategory($sportCategory);
+            $kickboxingSelfDefenseCourse->setUser($davidTrainer);
+            $this->courseRepository->save($kickboxingSelfDefenseCourse, true);
+            $return['messages']['courses'][] = 'Kickboxing for self-defense course created';
+        } else {
+            $return['messages']['courses'][] = 'Kickboxing for self-defense course already exists';
+        }
+
+        // Course 6 - Swimming for all levels
+        if (!$swimmingAllLevelsCourse) {
+            $swimmingAllLevelsCourse = new Course;
+            $swimmingAllLevelsCourse->setName('Swimming for all levels');
+            $swimmingAllLevelsCourse->setDescription('Swimming for all levels, you will learn swimming techniques for all levels, including basic strokes, breathing, and swimming workouts.');
+            $swimmingAllLevelsCourse->setImgPath('swimming-all-levels.jpg');
+            $swimmingAllLevelsCourse->setVideoPath('swimming-all-levels.mp4');
+            $swimmingAllLevelsCourse->setPrice('29');
+            $swimmingAllLevelsCourse->setDocumentRoot('swimming-all-levels.pdf');
+            $swimmingAllLevelsCourse->setCategory($sportCategory);
+            $swimmingAllLevelsCourse->setUser($yerayTrainer);
+            $this->courseRepository->save($swimmingAllLevelsCourse, true);
+            $return['messages']['courses'][] = 'Swimming for all levels course created';
+        } else {
+            $return['messages']['courses'][] = 'Swimming for all levels course already exists';
+        }
+
+        // Course 7 - Functional training fundamentals
+        if (!$functionalTrainingCourse) {
+            $functionalTrainingCourse = new Course;
+            $functionalTrainingCourse->setName('Functional training fundamentals');
+            $functionalTrainingCourse->setDescription('Functional training fundamentals, you will learn the basic principles of functional training and how to design workouts that improve your daily life and overall fitness.');
+            $functionalTrainingCourse->setImgPath('functional-training.jpg');
+            $functionalTrainingCourse->setVideoPath('functional-training.mp4');
+            $functionalTrainingCourse->setPrice('30');
+            $functionalTrainingCourse->setDocumentRoot('functional-training.pdf');
+            $functionalTrainingCourse->setCategory($sportCategory);
+            $functionalTrainingCourse->setUser($yerayTrainer);
+            $this->courseRepository->save($functionalTrainingCourse, true);
+            $return['messages']['courses'][] = 'Functional training fundamentals course created';
+        } else {
+            $return['messages']['courses'][] = 'Functional training fundamentals course already exists';
+        }
+
+        // Course 8 - Stretching and flexibility
+        if (!$stretchingFlexibilityCourse) {
+            $stretchingFlexibilityCourse = new Course;
+            $stretchingFlexibilityCourse->setName('Stretching and flexibility');
+            $stretchingFlexibilityCourse->setDescription('Stretching and flexibility, you will learn the proper techniques for stretching and improving your flexibility, which can help prevent injuries and improve your overall physical performance.');
+            $stretchingFlexibilityCourse->setImgPath('stretching-flexibility.jpg');
+            $stretchingFlexibilityCourse->setVideoPath('stretching-flexibility.mp4');
+            $stretchingFlexibilityCourse->setPrice('19');
+            $stretchingFlexibilityCourse->setDocumentRoot('stretching-flexibility.pdf');
+            $stretchingFlexibilityCourse->setCategory($lifeStyleCategory);
+            $stretchingFlexibilityCourse->setUser($sergioTrainer);
+            $this->courseRepository->save($stretchingFlexibilityCourse, true);
+            $return['messages']['courses'][] = 'Stretching and flexibility course created';
+        } else {
+            $return['messages']['courses'][] = 'Stretching and flexibility course already exists';
+        }
+
+        if (empty($this->buyUserCourseRepository->findAll())) {
+            $customerPurchaseCourse = new BuyUserCourse;
+            $customerPurchaseCourse->setUser($customerUser);
+            $customerPurchaseCourse->setCourse($pilatesCoreStrengthCourse);
+            $customerPurchaseCourse->setTransactionDate(new \DateTime);
+            $this->buyUserCourseRepository->save($customerPurchaseCourse);
+
+            $customerPurchaseCourse = new BuyUserCourse;
+            $customerPurchaseCourse->setUser($customerUser);
+            $customerPurchaseCourse->setCourse($gimnasioCourse);
+            $customerPurchaseCourse->setTransactionDate(new \DateTime);
+            $this->buyUserCourseRepository->save($customerPurchaseCourse);
+
+            $customerPurchaseCourse = new BuyUserCourse;
+            $customerPurchaseCourse->setUser($customerUser);
+            $customerPurchaseCourse->setCourse($swimmingAllLevelsCourse);
+            $customerPurchaseCourse->setTransactionDate(new \DateTime);
+            $this->buyUserCourseRepository->save($customerPurchaseCourse);
+
+            $customerPurchaseCourse = new BuyUserCourse;
+            $customerPurchaseCourse->setUser($customerUser);
+            $customerPurchaseCourse->setCourse($functionalTrainingCourse);
+            $customerPurchaseCourse->setTransactionDate(new \DateTime);
+            $this->buyUserCourseRepository->save($customerPurchaseCourse);
+            $return['messages']['purchases'][] = 'Customer purchased some courses';
+        }
 
         return new JsonResponse($return);
     }
