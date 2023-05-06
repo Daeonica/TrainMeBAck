@@ -92,6 +92,15 @@ class UserController extends AbstractController
         return new JsonResponse($user);
     }
 
+    public function setEmailIfValid($text)
+    {
+        if (filter_var($text, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     #[Route('/user/register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
@@ -116,43 +125,51 @@ class UserController extends AbstractController
                     // The hasNumber() function is created in this file, return true or false.
                     if (!$this->hasNumber($array['name']) && !$this->hasNumber($array['surname'])) {
                         if ($array['password'] != '') {
-                            if ($array['password'] == $array['confirmPassword']) {
+                            if ($this->setEmailIfValid($array['email'])) {
+                                if ($array['password'] == $array['confirmPassword']) {
 
-                                // If all is okey, then create User object, and add all attributes
-                                $user = new User();
-                                $user->setName($array['name']);
-                                $user->setSurname($array['surname']);
-                                $user->setEmail($array['email']);
+                                    // If all is okey, then create User object, and add all attributes
+                                    $user = new User();
+                                    $user->setName($array['name']);
+                                    $user->setSurname($array['surname']);
+                                    $user->setEmail($array['email']);
 
-                                // Allways save hashed password
-                                $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
-                                $user->setRegisterDate(new \DateTime);
+                                    // Allways save hashed password
+                                    $user->setPassword(password_hash($array['password'], PASSWORD_BCRYPT));
+                                    $user->setRegisterDate(new \DateTime);
 
-                                // Also, when we get data in Request, we receive role with her id
-                                // Where we are searching role with by id. (I forgot to validate if exists or not the role id)
-                                $role = $this->roleRepository->find($array['role']['id']);
+                                    // Also, when we get data in Request, we receive role with her id
+                                    // Where we are searching role with by id. (I forgot to validate if exists or not the role id)
+                                    $role = $this->roleRepository->find($array['role']['id']);
 
-                                // In User Entity, you can look we have a setRole function
-                                // This function is just for save role, sending in the parameter the Role Entity !!important (send Entity, not just role id)
-                                $user->setRole($role);
-                                $this->userRepository->save($user, true);
-                                unset($array);
+                                    // In User Entity, you can look we have a setRole function
+                                    // This function is just for save role, sending in the parameter the Role Entity !!important (send Entity, not just role id)
+                                    $user->setRole($role);
+                                    $this->userRepository->save($user, true);
+                                    unset($array);
 
-                                $return = [
-                                    // getDataInArray() is customed function for get all user data in array type than object type
-                                    "user" => $user->getDataInArray(),
-                                    "status" => 'success',
-                                    "code" => '200',
-                                ];
+                                    $return = [
+                                        // getDataInArray() is customed function for get all user data in array type than object type
+                                        "user" => $user->getDataInArray(),
+                                        "status" => 'success',
+                                        "code" => '200',
+                                    ];
 
-                                // In messages, allways we make with this estandar, because is more easy to loop all errors in the FrontEnd 
-                                $return['messages'][] = 'User has been deleted successfully';
+                                    // In messages, allways we make with this estandar, because is more easy to loop all errors in the FrontEnd 
+                                    $return['messages'][] = 'User has been deleted successfully';
+                                } else {
+                                    $return = [
+                                        "status" => 'error',
+                                        "code" => '400',
+                                    ];
+                                    $return['messages'][] = 'Confirm password is diferent';
+                                }
                             } else {
                                 $return = [
                                     "status" => 'error',
                                     "code" => '400',
                                 ];
-                                $return['messages'][] = 'Confirm password is diferent';
+                                $return['messages'][] = 'Email not valid';
                             }
                         } else {
                             $return = [
@@ -316,9 +333,18 @@ class UserController extends AbstractController
                 if (!empty($array['email'])) {
                     if ($user->getEmail() != $array['email']) {
                         if ($this->userRepository->findOneBy(['email' => $array['email']]) == null) {
-                            $user->setEmail($array['email']);
-                            $return["status"] = 'success';
-                            $return["code"] = '200';
+
+                            if ($this->setEmailIfValid($array['email'])) {
+                                $user->setEmail($array['email']);
+                                $return["status"] = 'success';
+                                $return["code"] = '200';
+                            } else {
+                                $return = [
+                                    "status" => 'error',
+                                    "code" => '400',
+                                ];
+                                $return['messages'][] = 'Email not valid';
+                            }
                         } else {
                             $return = [
                                 "status" => 'error',
@@ -409,33 +435,32 @@ class UserController extends AbstractController
 
     #[Route('/getTrainers', methods: ['GET'])]
     public function getTrainers()
-    {   
+    {
         $return = [];
         $role = $this->roleRepository->findOneBy(['key_value' => 'trainer']);
         if ($role) {
             $trainers = $role->getUsers()->toArray();
-        
+
             foreach ($trainers as $trainer) {
                 $return[] = $trainer->getDataInArray();
             }
         }
-     
+
         return new JsonResponse($return);
-        
     }
 
 
     #[Route('/trainer/get-by-id/{id}', methods: ['GET'])]
     public function getTrainersForId($id)
     {
-        $return=[];
+        $return = [];
         $trainer = $this->userRepository->find($id);
 
         if ($trainer->getRole()->getKeyValue() == 'trainer') {
             $return["status"] = 'success';
             $return["code"] = '200';
-            $return["trainer"]= $trainer->getDataInArray();
-        }else{
+            $return["trainer"] = $trainer->getDataInArray();
+        } else {
             $return["status"] = 'error';
             $return["code"] = '400';
             $return["message"][] = 'No existe el entrenador requerido';
@@ -443,6 +468,5 @@ class UserController extends AbstractController
 
 
         return new JsonResponse($return);
-        
     }
 }
