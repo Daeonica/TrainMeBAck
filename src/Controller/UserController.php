@@ -419,14 +419,14 @@ class UserController extends AbstractController
             $contact->setDescription($array['message']);
 
             //guardamos en la bbdd $this->contactRepository->save($contact, true);
-            $contact = $this->customerSupportRepository->save($contact, true);
-            $return["status"] = 'success';
-            $return["code"] = '200';
-            $return["message"][] = 'En breve será atendido, gracias por el feedback';
+            $this->customerSupportRepository->save($contact, true);
+            $return["message"][]    = 'Your message has been sent, thank you for your feedback';
+            $return["status"]       = 'success';
+            $return["code"]         = '200';
         } else {
             $return["status"] = 'error';
             $return["code"] = '400';
-            $return["message"][] = 'No hay datos';
+            $return["message"][] = 'Data not found';
             //retornamos mensaje de error con su codigo en el array de $return
         }
 
@@ -463,7 +463,7 @@ class UserController extends AbstractController
         } else {
             $return["status"] = 'error';
             $return["code"] = '400';
-            $return["message"][] = 'No existe el entrenador requerido';
+            $return["message"][] = 'Trainer not exists';
         }
 
 

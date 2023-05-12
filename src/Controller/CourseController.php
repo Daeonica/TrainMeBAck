@@ -233,20 +233,20 @@ class CourseController extends AbstractController
                 $return = [
                     'code' => '200',
                     'status' => 'success',
-                    'messages' => ['El curso ha sido eliminado con éxito']
+                    'messages' => ['Course deleted successfully']
                 ];
             } else {
                 $return = [
                     "code" => '400',
                     "status" => 'error',
-                    'messages' => ['El curso no existe']
+                    'messages' => ['Course not exists']
                 ];
             }
         } else {
             $return = [
                 'code' => '400',
                 'status' => 'error',
-                'messages' => ['Campos vacios']
+                'messages' => ['Data empty']
             ];
         }
 
@@ -299,14 +299,14 @@ class CourseController extends AbstractController
                     $return = [
                         'status' => 'success',
                         'code' => '200',
-                        'messages' => ['curso actualizado con éxito']
+                        'messages' => ['Course updated successfully']
                     ];
                 }
             } else {
                 $return = [
                     "status" => 'error',
                     "code" => '400',
-                    'messages' => ['No hay datos']
+                    'messages' => ['Data not found']
                 ];
             }
         }

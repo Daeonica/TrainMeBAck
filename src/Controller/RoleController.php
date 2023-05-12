@@ -18,25 +18,25 @@ class RoleController extends AbstractController
     private $serializer;
     public function __construct(private UserRepository $userRepository, private RoleRepository $roleRepository)
     {
-        
     }
 
 
 
     #[Route('/roles/get', methods: ['GET'])]
-    public function getRoles():JsonResponse{
-        
+    public function getRoles(): JsonResponse
+    {
+
         $rolesJson = $this->roleRepository->findAll();
         $roles = [];
 
-        
+
         foreach ($rolesJson as $role) {
             $roles[] = $role->getDataInArray();
         }
 
-        
 
-        return new JsonResponse($roles); 
+
+        return new JsonResponse($roles);
     }
 
     #[Route('/role/get-by-id/{id}', methods: ['GET'])]
@@ -69,7 +69,7 @@ class RoleController extends AbstractController
                         'role' => $role->getDataInArray(),
                         'messages' => ['Role updated successfully']
                     ];
-                }else{
+                } else {
                     $return = [
                         'code' => '400',
                         'status' => 'error',
@@ -131,10 +131,10 @@ class RoleController extends AbstractController
         return new JsonResponse($return);
     }
 
-    
+
     #[Route('/role/add', methods: ['POST'])]
 
-    public function setCategories(Request $request): JsonResponse
+    public function setRoles(Request $request): JsonResponse
     {
         $json = $request->get('data', null);
         $return = [];
@@ -143,10 +143,10 @@ class RoleController extends AbstractController
             $array = json_decode($json, true);
             $name = $array['name'];
             $key_value = $array['key_value'];
-
             $role = new Role;
 
             if (!empty($name)) {
+
                 $role->setName($name);
                 $return = [
                     'code' => 200,
@@ -154,16 +154,25 @@ class RoleController extends AbstractController
                 ];
             } else {
                 $return['messages'][] = 'The name is not valid';
+                $return['code']         = 400;
             }
 
             if (!empty($key_value)) {
-                $role->setKeyValue($key_value);
-                $return = [
-                    'code' => 200,
-                    'status' => 'success'
-                ];
-            }else {
-                $return['messages'][] = 'The key_value is not valid';
+
+                $isset = $this->roleRepository->findOneBy(['key_value' => $key_value]);
+                if (!$isset) {
+                    $role->setKeyValue($key_value);
+                    $return = [
+                        'code' => 200,
+                        'status' => 'success'
+                    ];
+                } else {
+                    $return['messages'][] = 'The key value already exists';
+                    $return['code']         = 400;
+                }
+            } else {
+                $return['messages'][] = 'The key value is not valid';
+                $return['code']         = 400;
             }
 
             if ($return['code'] == 200) {
@@ -172,11 +181,10 @@ class RoleController extends AbstractController
                 $return['messages'][] = 'Role saved successfully';
             } else {
                 $return['messages'][] = 'The role is not saved';
+                $return['code']         = 400;
             }
         }
 
         return new JsonResponse($return);
     }
-
 }
-
