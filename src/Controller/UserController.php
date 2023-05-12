@@ -420,13 +420,13 @@ class UserController extends AbstractController
 
             //guardamos en la bbdd $this->contactRepository->save($contact, true);
             $this->customerSupportRepository->save($contact, true);
-            $return["message"][]    = 'Your message has been sent, thank you for your feedback';
+            $return["messages"][]    = 'Your message has been sent, thank you for your feedback';
             $return["status"]       = 'success';
             $return["code"]         = '200';
         } else {
             $return["status"] = 'error';
             $return["code"] = '400';
-            $return["message"][] = 'Data not found';
+            $return["messages"][] = 'Data not found';
             //retornamos mensaje de error con su codigo en el array de $return
         }
 
