@@ -89,9 +89,12 @@ class ImageController extends AbstractController
             $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
             $response = new BinaryFileResponse($path);
             return $response;
+        }else{
+            $path = $this->getParameter('images_directory') . '/user/user-icon.png';
+            $response = new BinaryFileResponse($path);
+            return $response;
         }
 
-        return new JsonResponse($response);
     }
 
     #[Route('/course/upload/image/{id}', methods: ['POST'])]
@@ -155,6 +158,10 @@ class ImageController extends AbstractController
 
         if ($course->getImgPath()) {
             $path = $this->getParameter('images_directory') . '/course/' . $course->getImgPath();
+            $response = new BinaryFileResponse($path);
+            return $response;
+        }else{
+            $path = $this->getParameter('images_directory') . '/course/course-icon.png';
             $response = new BinaryFileResponse($path);
             return $response;
         }
@@ -238,10 +245,17 @@ class ImageController extends AbstractController
     {
 
         $category = $this->categoryRepository->find($id);
-        $path = $this->getParameter('images_directory') . '/category/' . $category->getImgPath();
-        $response = new BinaryFileResponse($path);
 
-        return $response;
+        if ($category->getImgPath()) {
+            $path = $this->getParameter('images_directory') . '/category/' . $category->getImgPath();
+            $response = new BinaryFileResponse($path);
+            return $response;
+        }else{
+            $path = $this->getParameter('images_directory') . '/category/category-icon.png';
+            $response = new BinaryFileResponse($path);
+            return $response;
+        }
+
     }
 
     #[Route('/category/upload/image/{id}', methods: ['POST'])]
