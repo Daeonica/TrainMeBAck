@@ -164,7 +164,6 @@ class CourseController extends AbstractController
 
         if ($json != null) {
             $array = json_decode($json, true);
-
             if (!empty($array['name']) && !empty($array['description']) && !empty($array['price'] && !empty($array['user']))) {
                 $user       = $this->userRepository->find($array['user']['id']);
                 $category   = $this->categoryRepository->find($array['category']['id']);
@@ -181,12 +180,11 @@ class CourseController extends AbstractController
                         $return = [
                             'status' => 'success',
                             'code' => 200,
-                            'messages' => ['Course created successfully']
+                            'messages' => ['Course created successfully'],
+                            'course' => $course->getDataInArray()
                         ];
                     } else {
                         $return = [
-                            'status' => 'error',
-                            'code' => 400,
                             'messages' => ['User not have permission to create course']
                         ];
                     }
@@ -453,5 +451,4 @@ class CourseController extends AbstractController
 
         return new JsonResponse($response);
     }
-
 }

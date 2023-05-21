@@ -23,6 +23,7 @@ use Symfony\Component\Validator\Constraints\File;
 class ImageController extends AbstractController
 {
 
+    
     public function __construct(private UserRepository $userRepository, private CourseRepository $courseRepository, private CategoryRepository $categoryRepository)
     {
     }
@@ -32,21 +33,21 @@ class ImageController extends AbstractController
     {
         $user = $this->userRepository->find($id);
         $return = [];
-    
+
         if ($user != null) {
             $file = $request->files->get('file', null);
             if ($file) {
                 $imageConstraint = new Image();
-    
+
                 $validator = Validation::createValidator();
                 $violations = $validator->validate($file, $imageConstraint);
-    
+
                 if (0 === count($violations)) {
                     $fileName = date('Y-m-d') . time() . '.' . $file->guessExtension();
                     try {
                         $file->move($this->getParameter('images_directory') . '/user', $fileName);
                         $user->setImgPath($fileName);
-    
+
                         $this->userRepository->save($user, true);
                         $return = [
                             'code' => '200',
@@ -89,12 +90,11 @@ class ImageController extends AbstractController
             $path = $this->getParameter('images_directory') . '/user/' . $user->getImgPath();
             $response = new BinaryFileResponse($path);
             return $response;
-        }else{
+        } else {
             $path = $this->getParameter('images_directory') . '/user/user-icon.png';
             $response = new BinaryFileResponse($path);
             return $response;
         }
-
     }
 
     #[Route('/course/upload/image/{id}', methods: ['POST'])]
@@ -160,14 +160,11 @@ class ImageController extends AbstractController
             $path = $this->getParameter('images_directory') . '/course/' . $course->getImgPath();
             $response = new BinaryFileResponse($path);
             return $response;
-        }else{
+        } else {
             $path = $this->getParameter('images_directory') . '/course/course-icon.png';
             $response = new BinaryFileResponse($path);
             return $response;
         }
-
-
-        return new JsonResponse($response);
     }
 
     #[Route('/course/upload/document/{id}', methods: ['POST'])]
@@ -175,7 +172,7 @@ class ImageController extends AbstractController
     {
         $course = $this->courseRepository->find($id);
         $return = [];
-    
+
         if ($course != null) {
             $file = $request->files->get('file', null);
             if ($file) {
@@ -187,16 +184,16 @@ class ImageController extends AbstractController
                     ],
                     'mimeTypesMessage' => 'Please upload a valid PDF or Excel document',
                 ]);
-    
+
                 $validator = Validation::createValidator();
                 $violations = $validator->validate($file, $documentConstraint);
-    
+
                 if (0 === count($violations)) {
                     $fileName = date('Y-m-d') . time() . '.' . $file->guessExtension();
                     try {
                         $file->move($this->getParameter('images_directory') . '/course/document/', $fileName);
                         $course->setDocumentRoot($fileName);
-    
+
                         $this->courseRepository->save($course, true);
                         $return = [
                             'code' => '200',
@@ -250,12 +247,11 @@ class ImageController extends AbstractController
             $path = $this->getParameter('images_directory') . '/category/' . $category->getImgPath();
             $response = new BinaryFileResponse($path);
             return $response;
-        }else{
+        } else {
             $path = $this->getParameter('images_directory') . '/category/category-icon.png';
             $response = new BinaryFileResponse($path);
             return $response;
         }
-
     }
 
     #[Route('/category/upload/image/{id}', methods: ['POST'])]
@@ -263,21 +259,21 @@ class ImageController extends AbstractController
     {
         $category = $this->categoryRepository->find($id);
         $return = [];
-    
+
         if ($category != null) {
             $file = $request->files->get('file', null);
             if ($file) {
                 $imageConstraint = new Image();
-    
+
                 $validator = Validation::createValidator();
                 $violations = $validator->validate($file, $imageConstraint);
-    
+
                 if (0 === count($violations)) {
                     $fileName = date('Y-m-d') . time() . '.' . $file->guessExtension();
                     try {
                         $file->move($this->getParameter('images_directory') . '/category', $fileName);
                         $category->setImgPath($fileName);
-    
+
                         $this->categoryRepository->save($category, true);
                         $return = [
                             'code' => '200',
@@ -380,4 +376,5 @@ class ImageController extends AbstractController
 
         return $response;
     }
+   
 }
