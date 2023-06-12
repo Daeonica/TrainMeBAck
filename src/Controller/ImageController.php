@@ -106,7 +106,7 @@ class ImageController extends AbstractController
         if ($course != null) {
             $file = $request->files->get('file', null);
             if ($file) {
-                $imageConstraint = new Image();
+                $imageConstraint = new Image(); //JPEG, PNG, GIF, 
 
                 $validator = Validation::createValidator();
                 $violations = $validator->validate($file, $imageConstraint);
@@ -319,7 +319,6 @@ class ImageController extends AbstractController
                     'mimeTypes' => [
                         'video/mp4',
                         'video/quicktime', // Para archivos .mov
-                        // Agregar más tipos MIME de video si es necesario
                     ],
                     'mimeTypesMessage' => 'Por favor, carga un archivo de video válido.',
                 ]);

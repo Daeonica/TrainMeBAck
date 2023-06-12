@@ -81,47 +81,31 @@ class CourseController extends AbstractController
         $categories     = $this->categoryRepository->findBy(['name' => $query]);
         $users          = $this->userRepository->findBetween($query);
 
-        // Recogemos y guardamos todo lo que encuentre a través de la tabla cursos:
         foreach ($courses as $course) {
             $all_courses[] = $course;
         };
-
-        // Recogemos y guardamos categorías con el nombre que reciba en la query:
         foreach ($categories as $category) {
-            // De cada categoría, recorremos sus cursos:
             foreach ($category->getCourses() as $course) {
-                // Si en el array de cursos principal está vacío, que guarde directamente el curso
                 if (empty($all_courses)) {
                     $all_courses[] = $course;
                 } else {
-                    // Sino, estamos recorriendo los cursos guardados en el array principal.
-                    // Comprobamos si los cursos guardados en el array principal y los cursos recibidos a través de las categorías son las mismas
-                    // Únicamente, se guardará el curso recibido por categorías si cuando acaba de recorrer todo el array, se valida que ya no exista en el array general
-                    $saved = false;
+                     $saved = false;
                     foreach ($all_courses as $all_course) {
                         if ($all_course->getId() == $course->getId()) {
                             $saved = true;
                         }
                     }
-
-                    // Aquí cuando acaba de recorrer todos los cursos guardados en el array principal ve que sigue siendo falso, se guardará en el array
-
                     if ($saved == false) {
                         $all_courses[] = $course;
                     }
                 }
             }
         };
-
-        // Cogemos usuarios que tengan en común con el nombre que recibimos en la query
         foreach ($users as $user) {
-            // De cada usuario cogemos array de cursos y la recorremos
             foreach ($user->getCourses() as $course) {
-                // Si está vacío que las añada
                 if (empty($all_courses)) {
                     $all_courses[] = $course;
                 } else {
-                    // Sino tenemos que comprobar si el curso recibido del usuario ya está guardado en el array general de cursos
                     $saved = false;
                     foreach ($all_courses as $all_course) {
                         if ($all_course->getId() == $course->getId()) {
@@ -129,16 +113,13 @@ class CourseController extends AbstractController
                         }
                     }
 
-                    // Si no está guardado en el array general de cursos, se guardará
                     if ($saved == false) {
                         $all_courses[] = $course;
                     }
                 }
             }
         }
-
         foreach ($all_courses as $all_course) {
-            // Aquí simpremente estoy limpiando de datos innecesarios para que la respuesta sea más limpia
             $data = $all_course->getDataInArray();
             unset($data['buy_user_courses']);
             $return[] = $data;
